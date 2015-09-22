@@ -1,0 +1,78 @@
+
+.node circle {
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node rect {
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 8px sans-serif;
+}
+
+.node .marked
+{
+    /*stroke:red!important;*/
+    fill:red!important;
+
+}
+.node.end_path circle{
+    fill:red!important;
+}
+
+.node.begin_path circle{
+    fill:red!important;
+}
+
+
+.link {
+  fill: none;
+  stroke: #555;
+  stroke-width: 1.5px;
+}
+
+.link.between{
+    stroke: #F00;
+}
+
+.tooltip
+{
+    position: absolute;
+    padding: 4px;
+    font: 12px Helvetica Neue;
+    background: #FFF;
+    border: solid 1px #aaa;
+    border-radius: 4px;
+    pointer-events: none;
+    z-order:1000;
+    text-align:center;
+}
+
+#options
+{
+    position: fixed;
+    padding: 10px;
+    font: 12px Helvetica Neue;
+    background: #CCC;
+    border: solid 0px #000;
+    border-radius: 4px;
+    z-order:1000;
+    width: 200px;
+    right: 20px;
+    top: 20px;
+}
+
+#search_path_length
+{
+    padding-top: 40px;
+    padding-bottom: 10px;
+}
+
+
+text
+{
+    font-size:16px;
+}

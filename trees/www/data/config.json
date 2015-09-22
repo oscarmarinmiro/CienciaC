@@ -1,0 +1,33 @@
+{
+    "abracadabra_suffix":{
+        "data": "data/abracadabra.json",
+        "h_span": 5,
+        "v_span": 1,
+        "h_jump": 280
+    },
+    "series":{
+        "data": "data/series_sequences.json",
+        "h_span": 5,
+        "v_span": 1,
+        "h_jump": 150
+    },
+    "users":{
+        "data": "data/users_sequences.json",
+        "h_span": 5,
+        "v_span": 1,
+        "h_jump": 150
+    },
+    "users_sequences_win":{
+        "data": "data/users_sequences_win.json",
+        "h_span": 5,
+        "v_span": 1,
+        "h_jump": 150
+    },
+    "users_sequences_fail":{
+        "data": "data/users_sequences_fail.json",
+        "h_span": 5,
+        "v_span": 1,
+        "h_jump": 150
+    }
+
+}

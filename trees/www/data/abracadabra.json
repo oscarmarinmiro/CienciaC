@@ -1,0 +1,74 @@
+{
+    "children": [
+        {
+            "children": [
+                {
+                    "children": [
+                        {
+                            "name": "__END__", 
+                            "size": 1
+                        }, 
+                        {
+                            "name": "C  A  D  A  B  R  A", 
+                            "size": 1
+                        }
+                    ], 
+                    "name": "B  R  A", 
+                    "size": 2
+                }, 
+                {
+                    "name": "D  A  B  R  A", 
+                    "size": 1
+                }, 
+                {
+                    "name": "__END__", 
+                    "size": 1
+                }, 
+                {
+                    "name": "C  A  D  A  B  R  A", 
+                    "size": 1
+                }
+            ], 
+            "name": "A", 
+            "size": 5
+        }, 
+        {
+            "children": [
+                {
+                    "name": "__END__", 
+                    "size": 1
+                }, 
+                {
+                    "name": "C  A  D  A  B  R  A", 
+                    "size": 1
+                }
+            ], 
+            "name": "R  A", 
+            "size": 2
+        }, 
+        {
+            "children": [
+                {
+                    "name": "__END__", 
+                    "size": 1
+                }, 
+                {
+                    "name": "C  A  D  A  B  R  A", 
+                    "size": 1
+                }
+            ], 
+            "name": "B  R  A", 
+            "size": 2
+        }, 
+        {
+            "name": "C  A  D  A  B  R  A", 
+            "size": 1
+        }, 
+        {
+            "name": "D  A  B  R  A", 
+            "size": 1
+        }
+    ], 
+    "name": "root", 
+    "size": 11
+}

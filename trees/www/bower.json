@@ -1,0 +1,11 @@
+{
+  "name": "sequences",
+  "author": "Oscar",
+  "version": "0.0.5",
+  "dependencies": {
+    "d3": "latest",
+    "jquery": "latest",
+    "typeahead.js": "latest"
+  },
+  "devDependencies": {}
+}

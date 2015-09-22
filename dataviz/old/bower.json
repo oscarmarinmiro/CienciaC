@@ -1,0 +1,24 @@
+{
+  "name": "cc_dataviz",
+  "version": "0.0.0",
+  "authors": [
+    "oscarmarinmiro <oscarmarinmiro@github.com>"
+  ],
+  "dependencies":{
+      "jquery": "latest",
+      "d3": "latest",
+      "moment": "latest",
+      "metrics-graphics": "latest"
+
+  },
+  "description": "viz lib",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

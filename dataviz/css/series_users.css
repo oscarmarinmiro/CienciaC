@@ -1,0 +1,78 @@
+.series
+{
+        background-color:#FFF;
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.rect_matrix
+{
+    stroke:black;
+    stroke-width: 0.5px;
+}
+
+.line_numbers
+{
+    font-family: "Helvetica Neue";
+    font-size: 12px;
+    text-anchor: middle;
+}
+
+.time_title
+{
+    font-family: "Helvetica Neue";
+    font-size: 20px;
+    text-anchor: middle;
+}
+
+.row_headers
+{
+    text-anchor: end;
+    font-family: "Helvetica Neue";
+    font-size: 12px;
+}
+
+.tooltip
+{
+    position: absolute;
+    padding: 4px;
+    font: 12px Helvetica Neue;
+    background: #FFF;
+    border: solid 1px #aaa;
+    border-radius: 4px;
+    pointer-events: none;
+    z-order:1000;
+    text-align:center;
+}
+
+.selected_circle_time
+{
+    stroke:black;
+    stroke-width:2px;
+}
+
+.selected_box_user
+{
+    stroke-width: 2px;
+}
+
+#series_select
+{
+    position: absolute;
+    left: 30px;
+    top: 140px;
+    /*width:105px;*/
+    padding: 8px;
+    font-size: 12px;
+    background: #ccc;
+    border: solid 1px #aaa;
+    border-radius: 6px;
+    z-order:1000;
+    color: black;
+
+}
+
+
+select{
+    width:100px;
+}
+

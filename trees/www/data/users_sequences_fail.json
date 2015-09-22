@@ -1,0 +1,434 @@
+{
+    "children": [
+        {
+            "children": [
+                {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 371
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 635
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 691
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 1697
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 431
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 262
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 1018
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 1711
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 1115
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 4523
+                        }, 
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 199
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 329
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 639
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 1167
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 336
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 619
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 304
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 1259
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 1907
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 4333
+                        }, 
+                        {
+                            "name": "__END__", 
+                            "size": 1878
+                        }
+                    ], 
+                    "name": "1", 
+                    "size": 10734
+                }, 
+                {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 264
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 334
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 391
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 989
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 249
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 221
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 598
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 1068
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 1108
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 3165
+                        }, 
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 231
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 380
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 590
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 1201
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 1138
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 388
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 168
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 515
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 1071
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 3410
+                        }, 
+                        {
+                            "name": "__END__", 
+                            "size": 3311
+                        }
+                    ], 
+                    "name": "-1", 
+                    "size": 9886
+                }, 
+                {
+                    "name": "__END__", 
+                    "size": 4209
+                }
+            ], 
+            "name": "1", 
+            "size": 24829
+        }, 
+        {
+            "children": [
+                {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 320
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 383
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 424
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 1127
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 208
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 357
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 889
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 1454
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 763
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 3344
+                        }, 
+                        {
+                            "name": "__END__", 
+                            "size": 2331
+                        }, 
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 192
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 269
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 469
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 930
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 254
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 519
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 211
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 984
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 1404
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 3318
+                        }
+                    ], 
+                    "name": "1", 
+                    "size": 8993
+                }, 
+                {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 160
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 555
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 372
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 1087
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 1223
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 220
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 298
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 806
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 1324
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 3634
+                        }, 
+                        {
+                            "name": "__END__", 
+                            "size": 1999
+                        }, 
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 141
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 633
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 426
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 1200
+                                }, 
+                                {
+                                    "children": [
+                                        {
+                                            "name": "1", 
+                                            "size": 245
+                                        }, 
+                                        {
+                                            "name": "__END__", 
+                                            "size": 346
+                                        }, 
+                                        {
+                                            "name": "-1", 
+                                            "size": 178
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 769
+                                }, 
+                                {
+                                    "name": "__END__", 
+                                    "size": 861
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 2830
+                        }
+                    ], 
+                    "name": "-1", 
+                    "size": 8463
+                }, 
+                {
+                    "name": "__END__", 
+                    "size": 5310
+                }
+            ], 
+            "name": "-1", 
+            "size": 22766
+        }
+    ], 
+    "name": "root", 
+    "size": 47595
+}

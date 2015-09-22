@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link rel="stylesheet" type="text/css" href="css/tree.css">
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/d3/d3.min.js"></script>
+<script src="js/expandable_tree.js"></script>
+
+
+<body>
+
+    <div id="options">
+        Choose Dataset:
+        <div id="select_file"><select id="files"></select></div>
+    </div>
+
+</body>
+
+<script>
+
+// Load config contents
+
+var self = {};
+
+d3.json("data/config.json", function (error, json) {
+    if (error) throw error;
+
+    self.config_data = json;
+
+    console.log(json);
+
+    // Populate drop-down
+
+    var files = $("#files");
+
+    $.each(self.config_data, function (key,value){
+        //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
+
+        files.append($("<option />").val(key).text(key));
+    });
+
+    files.change(function()
+    {
+        var key = $(this).val();
+        console.log("COMBO CHANGED");
+
+        var content = self.config_data[key];
+        console.log(content);
+//       console.log($(this).val());
+
+        // Remove old svg
+
+        $("#svg_tree").remove();
+        $("#tooltip").remove();
+        self.my_tree = ccviz.viz.expandableTree({'horizontal_span': content.h_span, 'horizontal_jump': content.h_jump, 'vertical_span': content.v_span});
+
+        self.my_tree.render(content.data);
+
+    });
+
+    files.trigger("change");
+
+});
+
+
+</script>
