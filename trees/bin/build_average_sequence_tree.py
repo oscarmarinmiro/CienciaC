@@ -3,14 +3,14 @@ __author__ = '@oscarmarinmiro @ @outliers_es'
 import pprint
 import json
 
-FILE_IN = "../assets/mr_banks.json"
+FILE_IN = "../assets/mr_banks.final.json"
 
 FILE_OUT = "../assets/average_sequences.csv"
 
 SEQ_SEPARATOR = ";"
 SEPARATOR = ","
 
-SEQUENCE_WINDOW = 5
+SEQUENCE_WINDOW = 6
 MAX_ROUNDS = 25
 
 with open(FILE_IN, "rb") as file_in:
@@ -27,14 +27,14 @@ with open(FILE_IN, "rb") as file_in:
         if index not in my_struct:
             my_struct[index] = {}
 
-        for round_str, round_entry in entry['rounds'].items():
+        for round_str, round_entry in entry['rnd'].items():
             my_struct[index][int(round_str)] = {'market': round_entry['result'], 'success': 0, 'errors': 0}
 
     for entry in my_data['users']:
 
-        for game in entry['games']:
-            rounds = game['rounds']
-            series_number = int(game['series'])
+        for game in entry['gam']:
+            rounds = game['rnd']
+            series_number = int(game['ser'])
 
             if len(rounds) > 0:
                 sequence = []

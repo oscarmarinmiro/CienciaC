@@ -9,7 +9,7 @@ from tree_averages import BeginTree
 
 FILE_IN = "../assets/average_sequences.csv"
 
-FILE_OUT = "../www/data/averages.json"
+FILE_OUT = "../www/data/averages_6.json"
 
 SEPARATOR_VALUE = ","
 

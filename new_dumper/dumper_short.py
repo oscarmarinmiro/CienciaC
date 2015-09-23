@@ -18,7 +18,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
 from db.models import *
 
-FILE_OUT = "mr_banks.short.2.json"
+FILE_OUT = "mr_banks.final.indent.json"
 
 # final data [made of user vector]
 

@@ -1,75 +1,67 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
 
-.node circle {
-  fill: #fff;
-  stroke: black;
-  stroke-width: 1.5px;
-}
-
-.node {
-  font: 10px sans-serif;
-}
-
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
-}
-
-</style>
-<body>
+<link rel="stylesheet" type="text/css" href="css/circular_tree.css">
 <script src="bower_components/d3/d3.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="js/circular_tree.js"></script>
+
+<body>
+
+    <div id="options">
+        Choose Dataset:
+        <div id="select_file"><select id="files"></select></div>
+    </div>
+
+</body>
+
+
+
 <script>
 
-var diameter = 960;
+// Load config contents
 
-var tree = d3.layout.tree()
-    .size([360, diameter / 2 - 120])
-    .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+var self = {};
 
-var diagonal = d3.svg.diagonal.radial()
-    .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+d3.json("data/config_circular.json", function (error, json) {
+    if (error) throw error;
 
-var svg = d3.select("body").append("svg")
-    .attr("width", diameter)
-    .attr("height", diameter)
-  .append("g")
-    .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+    self.config_data = json;
 
-d3.json("data/averages.json", function(error, root) {
-  if (error) throw error;
+    console.log(json);
 
-  var nodes = tree.nodes(root),
-      links = tree.links(nodes);
+    // Populate drop-down
 
-  var link = svg.selectAll(".link")
-      .data(links.filter(function(d,i){ return d.source.depth!=0}))
-    .enter().append("path")
-      .attr("class", "link")
-      .attr("d", diagonal);
+    var files = $("#files");
 
-  var node = svg.selectAll(".node")
-      .data(nodes.filter(function(d,i){ return d.depth!=0}))
-    .enter().append("g")
-      .attr("class", "node")
-      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; });
+    $.each(self.config_data, function (key,value){
+        //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
 
-  node.append("circle")
-          .style("fill", function(d,i){
-                return d.name=="-1" ? "#FF1919": "#00B233";
-          })
-      .attr("r", 9.0);
+        files.append($("<option />").val(key).text(key));
+    });
 
-  node.append("text")
-      .attr("dy", ".31em")
-          .attr("x", function(d) { return d.x < 180 ? 10 : -10; })
-      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-      .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
-      .text(function(d) { return d.average.toFixed(2); });
+    files.change(function()
+    {
+        var key = $(this).val();
+        console.log("COMBO CHANGED");
+
+        var content = self.config_data[key];
+        console.log(content);
+//       console.log($(this).val());
+
+        // Remove old svg
+
+        $("svg").remove();
+        $("#tooltip").remove();
+
+        self.my_tree = ccviz.viz.circularTree({'diameter': $(window).height()});
+        self.my_tree.render(content.data);
+
+    });
+
+    files.trigger("change");
+
 });
 
-d3.select(self.frameElement).style("height", diameter - 150 + "px");
 
 </script>

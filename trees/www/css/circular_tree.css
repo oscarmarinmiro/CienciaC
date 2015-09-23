@@ -1,0 +1,55 @@
+body{
+    margin:auto;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: black;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+
+#options
+{
+    position: fixed;
+    padding: 10px;
+    font: 12px Helvetica Neue;
+    background: #CCC;
+    border: solid 0px #000;
+    border-radius: 4px;
+    z-order:1000;
+    width: 200px;
+    right: 20px;
+    top: 20px;
+}
+
+svg{
+    margin: auto;
+    display: block;
+}
+
+
+.tooltip_viz
+{
+    position: absolute;
+    padding: 10px;
+    font: 12px Helvetica Neue;
+    background: #CCC;
+    /*border: solid 1px #aaa;*/
+    /*border-radius: 4px;*/
+    pointer-events: none;
+    z-order:1000;
+    text-align:center;
+    color: black;
+}
+
