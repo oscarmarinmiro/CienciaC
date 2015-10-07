@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<link rel="stylesheet" type="text/css" href="css/circular_tree.css">
-<script src="bower_components/d3/d3.js"></script>
+<link rel="stylesheet" type="text/css" href="css/tree.css">
+
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
-<script src="js/circular_tree.js"></script>
+<script src="bower_components/d3/d3.min.js"></script>
+<script src="js/expandable_tree.js"></script>
+
 
 <body>
 
     <div id="node_browser">
-        <span class="nodes_header">Sequences table</span>
+        <span class="nodes_header">Nodes table</span>
         <div id="node_list"></div>
     </div>
 
+
     <div id="options">
-        <span class="nodes_header">Choose dataset</span>
+        <span class="nodes_header">Choose Dataset:</span>
         <div id="select_file"><select id="files"></select></div>
     </div>
 
 </body>
-
-
 
 <script>
 
@@ -56,10 +57,10 @@ d3.json("data/config_circular.json", function (error, json) {
 
         // Remove old svg
 
-        $("svg").remove();
+        $("#svg_tree").remove();
         $("#tooltip").remove();
+        self.my_tree = ccviz.viz.expandableTree({'horizontal_span': content.h_span, 'horizontal_jump': content.h_jump, 'vertical_span': content.v_span});
 
-        self.my_tree = ccviz.viz.circularTree({'diameter': $(window).height(), 'chart_margin': 20});
         self.my_tree.render(content.data);
 
     });
