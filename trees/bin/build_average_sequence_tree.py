@@ -40,10 +40,11 @@ with open(FILE_IN, "rb") as file_in:
                 sequence = []
                 index = 1
                 for round in rounds:
-                    if round[3] == -1:
-                        my_struct[series_number][index]['errors'] += 1
-                    else:
-                        my_struct[series_number][index]['success'] += 1
+                    if round[4]<7 and round[4]>3:
+                        if round[3] == -1:
+                            my_struct[series_number][index]['errors'] += 1
+                        else:
+                            my_struct[series_number][index]['success'] += 1
 
                     index += 1
 
@@ -56,7 +57,10 @@ for number, entry in my_struct.items():
     for round_number in sorted(entry.keys()):
         if round_number < 26:
             struct = entry[round_number]
-            struct['success_rate'] = struct['success'] / (struct['errors'] + struct['success'] + 0.0)
+            if struct['errors'] + struct['success'] == 0:
+                struct['success_rate'] = -1
+            else:
+                struct['success_rate'] = struct['success'] / (struct['errors'] + struct['success'] + 0.0)
             series_rounds.append(struct)
 
     final_series[number] = series_rounds
@@ -75,17 +79,19 @@ for serie in sorted(final_series.keys()):
 
         s_rate = my_sequence[-1]['success_rate']
 
-        for j in range(0,len(my_sequence)):
-            mini_sequence = my_sequence[j:len(my_sequence)+1]
+        if s_rate!= -1:
 
-            market_sequence = ";".join([str(entry['market']) for entry in mini_sequence])
+            for j in range(0,len(my_sequence)):
+                mini_sequence = my_sequence[j:len(my_sequence)+1]
 
-            if market_sequence not in sequences:
-                sequences[market_sequence] = []
+                market_sequence = ";".join([str(entry['market']) for entry in mini_sequence])
 
-            sequences[market_sequence].append(s_rate)
+                if market_sequence not in sequences:
+                    sequences[market_sequence] = []
 
-            print "%s --> %f" % (market_sequence, s_rate)
+                sequences[market_sequence].append(s_rate)
+
+                print "%s --> %f" % (market_sequence, s_rate)
 
 
 print "==============="

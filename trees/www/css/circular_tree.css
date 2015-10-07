@@ -1,5 +1,5 @@
 body{
-    margin:auto;
+    margin:0;
 }
 
 .node circle {
@@ -12,12 +12,27 @@ body{
   font: 10px sans-serif;
 }
 
+.node.over{
+    opacity:1.0;
+}
+
+.node.non_over{
+    opacity:0.2;
+}
+
+.node.selected_hidden{
+    opacity:0.2;
+}
+
 .link {
   fill: none;
   stroke: #ccc;
   stroke-width: 1.5px;
 }
 
+#select_file {
+    margin-top:10px;
+}
 
 #options
 {
@@ -33,8 +48,80 @@ body{
     top: 20px;
 }
 
+
+#node_browser
+{
+    position: fixed;
+    padding: 10px;
+    font: 12px Helvetica Neue;
+    background: #CCC;
+    border: solid 0px #000;
+    border-radius: 4px;
+    z-order:1000;
+    width: 225px;
+    height:90%;
+    left: 20px;
+    top: 20px;
+}
+
+#node_list
+{
+    width:100%;
+    background: #FFF;
+    height: 95%;
+    margin-top:10px;
+    border: solid 0px #000;
+    border-radius: 4px;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
+    font-size:10px;
+}
+
+/*Node list styles*/
+
+.node_row{
+    padding:5px;
+    height: 30px;
+    background-color: #EEE;
+    margin-bottom: 1px;
+}
+
+.node_row:hover{
+    background-color: #DDD;
+}
+.node_arrows{
+    float:left;
+    padding-left: 5px;
+}
+
+.node_arrow{
+    height: 20px;
+    width: 20px;
+    padding-top:5px;
+}
+
+.node_check{
+    float:left;
+    margin-top:5px;
+}
+
+.node_info{
+    float:right;
+    padding-right:5px;
+}
+
+.node_freq{
+}
+
+.node_prob{
+}
+
+.nodes_header{
+    font-size:16px;
+}
+
 svg{
-    margin: auto;
+    margin:auto;
     display: block;
 }
 

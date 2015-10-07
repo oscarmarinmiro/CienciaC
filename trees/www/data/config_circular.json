@@ -1,8 +1,36 @@
 {
-    "all_data_5":{
-        "data": "data/averages.json"
-    },
-    "all_data_6":{
+    "all data":{
         "data": "data/averages_6.json"
+    },
+    "man":{
+        "data": "data/averages_man.json"
+    },
+    "woman":{
+        "data": "data/averages_woman.json"
+    },
+    "Range age 0":{
+        "data": "data/averages_re0.json"
+    },
+    "Range age 1":{
+        "data": "data/averages_re1.json"
+    },
+    "Range age 2":{
+        "data": "data/averages_re2.json"
+    },
+    "Range age 3":{
+        "data": "data/averages_re3.json"
+    },
+    "Information consulted: 1":{
+        "data": "data/averages_con1.json"
+    },
+    "Information consulted: 2-3":{
+        "data": "data/averages_con2.json"
+    },
+    "Information consulted: 4-6":{
+        "data": "data/averages_con3.json"
+    },
+    "Information consulted: > 6":{
+        "data": "data/averages_con4.json"
     }
+
 }

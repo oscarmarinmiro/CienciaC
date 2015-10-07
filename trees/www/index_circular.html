@@ -8,8 +8,13 @@
 
 <body>
 
+    <div id="node_browser">
+        <span class="nodes_header">Sequences table</span>
+        <div id="node_list"></div>
+    </div>
+
     <div id="options">
-        Choose Dataset:
+        <span class="nodes_header">Choose dataset</span>
         <div id="select_file"><select id="files"></select></div>
     </div>
 
@@ -54,7 +59,7 @@ d3.json("data/config_circular.json", function (error, json) {
         $("svg").remove();
         $("#tooltip").remove();
 
-        self.my_tree = ccviz.viz.circularTree({'diameter': $(window).height()});
+        self.my_tree = ccviz.viz.circularTree({'diameter': $(window).height(), 'chart_margin': 20});
         self.my_tree.render(content.data);
 
     });
