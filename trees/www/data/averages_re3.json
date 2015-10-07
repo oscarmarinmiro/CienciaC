@@ -1,0 +1,761 @@
+{
+    "average": 0, 
+    "children": [
+        {
+            "average": 0.565001, 
+            "children": [
+                {
+                    "average": 0.678202, 
+                    "children": [
+                        {
+                            "average": 0.698046, 
+                            "children": [
+                                {
+                                    "average": 0.700031, 
+                                    "children": [
+                                        {
+                                            "average": 0.674878, 
+                                            "children": [
+                                                {
+                                                    "average": 0.678782, 
+                                                    "name": "1", 
+                                                    "size": 17
+                                                }, 
+                                                {
+                                                    "average": 0.297306, 
+                                                    "name": "-1", 
+                                                    "size": 19
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 75
+                                        }, 
+                                        {
+                                            "average": 0.355378, 
+                                            "children": [
+                                                {
+                                                    "average": 0.434747, 
+                                                    "name": "1", 
+                                                    "size": 16
+                                                }, 
+                                                {
+                                                    "average": 0.497024, 
+                                                    "name": "-1", 
+                                                    "size": 12
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 57
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 208
+                                }, 
+                                {
+                                    "average": 0.342376, 
+                                    "children": [
+                                        {
+                                            "average": 0.526238, 
+                                            "children": [
+                                                {
+                                                    "average": 0.740751, 
+                                                    "name": "1", 
+                                                    "size": 13
+                                                }, 
+                                                {
+                                                    "average": 0.344264, 
+                                                    "name": "-1", 
+                                                    "size": 11
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 49
+                                        }, 
+                                        {
+                                            "average": 0.494048, 
+                                            "children": [
+                                                {
+                                                    "average": 0.465079, 
+                                                    "name": "1", 
+                                                    "size": 9
+                                                }, 
+                                                {
+                                                    "average": 0.504762, 
+                                                    "name": "-1", 
+                                                    "size": 10
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 38
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 134
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 473
+                        }, 
+                        {
+                            "average": 0.314532, 
+                            "children": [
+                                {
+                                    "average": 0.468424, 
+                                    "children": [
+                                        {
+                                            "average": 0.731777, 
+                                            "children": [
+                                                {
+                                                    "average": 0.771612, 
+                                                    "name": "1", 
+                                                    "size": 13
+                                                }, 
+                                                {
+                                                    "average": 0.419742, 
+                                                    "name": "-1", 
+                                                    "size": 12
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 51
+                                        }, 
+                                        {
+                                            "average": 0.285794, 
+                                            "children": [
+                                                {
+                                                    "average": 0.356429, 
+                                                    "name": "1", 
+                                                    "size": 10
+                                                }, 
+                                                {
+                                                    "average": 0.375, 
+                                                    "name": "-1", 
+                                                    "size": 4
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 29
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 122
+                                }, 
+                                {
+                                    "average": 0.442831, 
+                                    "children": [
+                                        {
+                                            "average": 0.348333, 
+                                            "children": [
+                                                {
+                                                    "average": 0.658658, 
+                                                    "name": "1", 
+                                                    "size": 11
+                                                }, 
+                                                {
+                                                    "average": 0.139286, 
+                                                    "name": "-1", 
+                                                    "size": 9
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 40
+                                        }, 
+                                        {
+                                            "average": 0.488549, 
+                                            "children": [
+                                                {
+                                                    "average": 0.460623, 
+                                                    "name": "1", 
+                                                    "size": 13
+                                                }, 
+                                                {
+                                                    "average": 0.611111, 
+                                                    "name": "-1", 
+                                                    "size": 6
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 40
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 125
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 339
+                        }
+                    ], 
+                    "name": "1", 
+                    "size": 1047
+                }, 
+                {
+                    "average": 0.268693, 
+                    "children": [
+                        {
+                            "average": 0.443665, 
+                            "children": [
+                                {
+                                    "average": 0.727778, 
+                                    "children": [
+                                        {
+                                            "average": 0.769722, 
+                                            "children": [
+                                                {
+                                                    "average": 0.794772, 
+                                                    "name": "1", 
+                                                    "size": 23
+                                                }, 
+                                                {
+                                                    "average": 0.276531, 
+                                                    "name": "-1", 
+                                                    "size": 7
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 60
+                                        }, 
+                                        {
+                                            "average": 0.380238, 
+                                            "children": [
+                                                {
+                                                    "average": 0.388294, 
+                                                    "name": "1", 
+                                                    "size": 6
+                                                }, 
+                                                {
+                                                    "average": 0.446561, 
+                                                    "name": "-1", 
+                                                    "size": 9
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 30
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 138
+                                }, 
+                                {
+                                    "average": 0.303013, 
+                                    "children": [
+                                        {
+                                            "average": 0.423545, 
+                                            "children": [
+                                                {
+                                                    "average": 0.612202, 
+                                                    "name": "1", 
+                                                    "size": 8
+                                                }, 
+                                                {
+                                                    "average": 0.307619, 
+                                                    "name": "-1", 
+                                                    "size": 10
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 36
+                                        }, 
+                                        {
+                                            "average": 0.317949, 
+                                            "children": [
+                                                {
+                                                    "average": 0.028571, 
+                                                    "name": "1", 
+                                                    "size": 7
+                                                }, 
+                                                {
+                                                    "average": 0.452778, 
+                                                    "name": "-1", 
+                                                    "size": 6
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 26
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 94
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 313
+                        }, 
+                        {
+                            "average": 0.414099, 
+                            "children": [
+                                {
+                                    "average": 0.346341, 
+                                    "children": [
+                                        {
+                                            "average": 0.461607, 
+                                            "children": [
+                                                {
+                                                    "average": 0.219048, 
+                                                    "name": "1", 
+                                                    "size": 7
+                                                }, 
+                                                {
+                                                    "average": 0.396057, 
+                                                    "name": "-1", 
+                                                    "size": 16
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 47
+                                        }, 
+                                        {
+                                            "average": 0.228641, 
+                                            "children": [
+                                                {
+                                                    "average": 0.421088, 
+                                                    "name": "1", 
+                                                    "size": 7
+                                                }, 
+                                                {
+                                                    "average": 0.343333, 
+                                                    "name": "-1", 
+                                                    "size": 10
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 34
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 122
+                                }, 
+                                {
+                                    "average": 0.439575, 
+                                    "children": [
+                                        {
+                                            "average": 0.441883, 
+                                            "children": [
+                                                {
+                                                    "average": 0.562771, 
+                                                    "name": "1", 
+                                                    "size": 11
+                                                }, 
+                                                {
+                                                    "average": 0.07, 
+                                                    "name": "-1", 
+                                                    "size": 10
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 43
+                                        }, 
+                                        {
+                                            "average": 0.602976, 
+                                            "children": [
+                                                {
+                                                    "average": 0.41369, 
+                                                    "name": "1", 
+                                                    "size": 4
+                                                }, 
+                                                {
+                                                    "average": 0.600595, 
+                                                    "name": "-1", 
+                                                    "size": 8
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 24
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 104
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 309
+                        }
+                    ], 
+                    "name": "-1", 
+                    "size": 793
+                }
+            ], 
+            "name": "1", 
+            "size": 2261
+        }, 
+        {
+            "average": 0.35854, 
+            "children": [
+                {
+                    "average": 0.407215, 
+                    "children": [
+                        {
+                            "average": 0.636018, 
+                            "children": [
+                                {
+                                    "average": 0.691387, 
+                                    "children": [
+                                        {
+                                            "average": 0.73827, 
+                                            "children": [
+                                                {
+                                                    "average": 0.692381, 
+                                                    "name": "1", 
+                                                    "size": 20
+                                                }, 
+                                                {
+                                                    "average": 0.469841, 
+                                                    "name": "-1", 
+                                                    "size": 9
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 63
+                                        }, 
+                                        {
+                                            "average": 0.330532, 
+                                            "children": [
+                                                {
+                                                    "average": 0.670833, 
+                                                    "name": "1", 
+                                                    "size": 8
+                                                }, 
+                                                {
+                                                    "average": 0.488946, 
+                                                    "name": "-1", 
+                                                    "size": 7
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 32
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 146
+                                }, 
+                                {
+                                    "average": 0.29591, 
+                                    "children": [
+                                        {
+                                            "average": 0.313828, 
+                                            "children": [
+                                                {
+                                                    "average": 0.712831, 
+                                                    "name": "1", 
+                                                    "size": 9
+                                                }, 
+                                                {
+                                                    "average": 0.125, 
+                                                    "name": "-1", 
+                                                    "size": 4
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 26
+                                        }, 
+                                        {
+                                            "average": 0.415377, 
+                                            "children": [
+                                                {
+                                                    "average": 0.220952, 
+                                                    "name": "1", 
+                                                    "size": 10
+                                                }, 
+                                                {
+                                                    "average": 0.47119, 
+                                                    "name": "-1", 
+                                                    "size": 10
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 44
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 109
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 349
+                        }, 
+                        {
+                            "average": 0.223774, 
+                            "children": [
+                                {
+                                    "average": 0.414211, 
+                                    "children": [
+                                        {
+                                            "average": 0.726692, 
+                                            "children": [
+                                                {
+                                                    "average": 0.795408, 
+                                                    "name": "1", 
+                                                    "size": 14
+                                                }, 
+                                                {
+                                                    "average": 0.222222, 
+                                                    "name": "-1", 
+                                                    "size": 3
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 36
+                                        }, 
+                                        {
+                                            "average": 0.398168, 
+                                            "children": [
+                                                {
+                                                    "average": 0.472789, 
+                                                    "name": "1", 
+                                                    "size": 7
+                                                }, 
+                                                {
+                                                    "average": 0.427778, 
+                                                    "name": "-1", 
+                                                    "size": 6
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 26
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 94
+                                }, 
+                                {
+                                    "average": 0.366955, 
+                                    "children": [
+                                        {
+                                            "average": 0.24902, 
+                                            "children": [
+                                                {
+                                                    "average": 0.287879, 
+                                                    "name": "1", 
+                                                    "size": 11
+                                                }, 
+                                                {
+                                                    "average": 0.272222, 
+                                                    "name": "-1", 
+                                                    "size": 6
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 34
+                                        }, 
+                                        {
+                                            "average": 0.400317, 
+                                            "children": [
+                                                {
+                                                    "average": 0.466667, 
+                                                    "name": "1", 
+                                                    "size": 8
+                                                }, 
+                                                {
+                                                    "average": 0.594841, 
+                                                    "name": "-1", 
+                                                    "size": 6
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 29
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 96
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 257
+                        }
+                    ], 
+                    "name": "1", 
+                    "size": 770
+                }, 
+                {
+                    "average": 0.452833, 
+                    "children": [
+                        {
+                            "average": 0.374817, 
+                            "children": [
+                                {
+                                    "average": 0.528798, 
+                                    "children": [
+                                        {
+                                            "average": 0.526751, 
+                                            "children": [
+                                                {
+                                                    "average": 0.596429, 
+                                                    "name": "1", 
+                                                    "size": 10
+                                                }, 
+                                                {
+                                                    "average": 0.490476, 
+                                                    "name": "-1", 
+                                                    "size": 7
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 34
+                                        }, 
+                                        {
+                                            "average": 0.243204, 
+                                            "children": [
+                                                {
+                                                    "average": 0.25, 
+                                                    "name": "1", 
+                                                    "size": 7
+                                                }, 
+                                                {
+                                                    "average": 0.396667, 
+                                                    "name": "-1", 
+                                                    "size": 15
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 46
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 122
+                                }, 
+                                {
+                                    "average": 0.144013, 
+                                    "children": [
+                                        {
+                                            "average": 0.386996, 
+                                            "children": [
+                                                {
+                                                    "average": 0.810952, 
+                                                    "name": "1", 
+                                                    "size": 10
+                                                }, 
+                                                {
+                                                    "average": 0.7, 
+                                                    "name": "-1", 
+                                                    "size": 3
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 26
+                                        }, 
+                                        {
+                                            "average": 0.39881, 
+                                            "children": [
+                                                {
+                                                    "average": 0.403333, 
+                                                    "name": "1", 
+                                                    "size": 10
+                                                }, 
+                                                {
+                                                    "average": 0.365344, 
+                                                    "name": "-1", 
+                                                    "size": 9
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 39
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 99
+                                }
+                            ], 
+                            "name": "1", 
+                            "size": 299
+                        }, 
+                        {
+                            "average": 0.496949, 
+                            "children": [
+                                {
+                                    "average": 0.417659, 
+                                    "children": [
+                                        {
+                                            "average": 0.640056, 
+                                            "children": [
+                                                {
+                                                    "average": 0.74127, 
+                                                    "name": "1", 
+                                                    "size": 9
+                                                }, 
+                                                {
+                                                    "average": -0.0625, 
+                                                    "name": "-1", 
+                                                    "size": 8
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 34
+                                        }, 
+                                        {
+                                            "average": 0.059384, 
+                                            "children": [
+                                                {
+                                                    "average": 0.347222, 
+                                                    "name": "1", 
+                                                    "size": 6
+                                                }, 
+                                                {
+                                                    "average": 0.454286, 
+                                                    "name": "-1", 
+                                                    "size": 10
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 33
+                                        }
+                                    ], 
+                                    "name": "1", 
+                                    "size": 103
+                                }, 
+                                {
+                                    "average": 0.584952, 
+                                    "children": [
+                                        {
+                                            "average": 0.37033, 
+                                            "children": [
+                                                {
+                                                    "average": 0.781746, 
+                                                    "name": "1", 
+                                                    "size": 6
+                                                }, 
+                                                {
+                                                    "average": 0.051587, 
+                                                    "name": "-1", 
+                                                    "size": 6
+                                                }
+                                            ], 
+                                            "name": "1", 
+                                            "size": 25
+                                        }, 
+                                        {
+                                            "average": 0.54623, 
+                                            "children": [
+                                                {
+                                                    "average": 0.33244, 
+                                                    "name": "1", 
+                                                    "size": 8
+                                                }, 
+                                                {
+                                                    "average": 0.4375, 
+                                                    "name": "-1", 
+                                                    "size": 4
+                                                }
+                                            ], 
+                                            "name": "-1", 
+                                            "size": 24
+                                        }
+                                    ], 
+                                    "name": "-1", 
+                                    "size": 74
+                                }
+                            ], 
+                            "name": "-1", 
+                            "size": 241
+                        }
+                    ], 
+                    "name": "-1", 
+                    "size": 690
+                }
+            ], 
+            "name": "-1", 
+            "size": 1789
+        }
+    ], 
+    "name": "root", 
+    "size": 4050
+}
