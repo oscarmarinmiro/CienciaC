@@ -7,17 +7,25 @@
 <script src="js/circular_tree.js"></script>
 
 <body>
+    <div id="left_frame">
 
-    <div id="node_browser">
-        <span class="nodes_header">Sequences table</span>
-        <div id="node_list"></div>
+        <div id="options">
+            <span class="nodes_header">Choose dataset</span>
+            <div id="select_file"><select id="files"></select></div>
+
+        </div>
+
+        <div id="node_browser">
+            <span class="nodes_header">Sequences table</span>
+            <div class="selectors"><span id="select_all">Select All</span>&nbsp;&nbsp;<span id="deselect_all">Deselect All</span></div>
+            <div id="node_list"></div>
+        </div>
+
     </div>
 
-    <div id="options">
-        <span class="nodes_header">Choose dataset</span>
-        <div id="select_file"><select id="files"></select></div>
-    </div>
+    <div id="right_frame">
 
+    </div>
 </body>
 
 
@@ -59,7 +67,7 @@ d3.json("data/config_circular.json", function (error, json) {
         $("svg").remove();
         $("#tooltip").remove();
 
-        self.my_tree = ccviz.viz.circularTree({'diameter': $(window).height(), 'chart_margin': 20});
+        self.my_tree = ccviz.viz.circularTree({'diameter': $("#right_frame").height()>$("#right_frame").width()? $("#right_frame").width(): $("#right_frame").height() , 'chart_margin': 20, 'id': "right_frame"});
         self.my_tree.render(content.data);
 
     });
