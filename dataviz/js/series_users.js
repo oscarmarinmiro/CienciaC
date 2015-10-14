@@ -18,11 +18,10 @@ ccviz.controller.series_users = function(options)
 
 
     self.get_conditions = function(key){
-        var conditions = {'game':{'series':parseInt(key,10)}};
+        var conditions = {'game':{'ser':parseInt(key,10)}};
 
         // Get filter values
 
-        console.log("GETTING FILTERS");
         $.each($(".filters"), function(i,d){
             var id = $(d).attr("id");
             var type = $(d).attr("type");
@@ -37,30 +36,28 @@ ccviz.controller.series_users = function(options)
 
         });
 
-        console.log("FINAL CONDITIONS");
-
         return conditions;
     };
 
-    self.fill_combo_fields_user = function(user_combo_fields, my_data){
+    self.fill_combo_fields_user = function(user_combo_fields, reverse_user_combo_fields, my_data){
 
         $.each(my_data.users, function(i,d){
             $.each(d, function (key,value){
-                if((key in user_combo_fields) && (!(value in user_combo_fields[key]))){
-                    user_combo_fields[key][value] = true;
+                if((key in reverse_user_combo_fields) && (!(value in user_combo_fields[reverse_user_combo_fields[key]]))){
+                    user_combo_fields[reverse_user_combo_fields[key]][value] = true;
                 }
             });
         });
 
     };
 
-    self.fill_combo_fields_game = function(game_combo_fields, my_data){
+    self.fill_combo_fields_game = function(game_combo_fields, reverse_game_combo_fields,my_data){
 
         $.each(my_data.users, function(i,d){
-            $.each(d.games, function (i,d){
+            $.each(d.gam, function (i,d){
                 $.each(d, function (key,value) {
-                    if((key in game_combo_fields) && (!(value in game_combo_fields[key]))){
-                        game_combo_fields[key][value] = true;
+                    if((key in reverse_game_combo_fields) && (!(value in game_combo_fields[reverse_game_combo_fields[key]]))){
+                        game_combo_fields[reverse_game_combo_fields[key]][value] = true;
                     }
                 });
             });
@@ -89,9 +86,9 @@ ccviz.controller.series_users = function(options)
         // Scale info
 
         self.infos = {
-            3: { range: ["#C44", "#4C4"], extremes: ['wrong', 'right'], 'name': "errors"},
-            2: { range: ["#C44", "#4C4"], extremes: ['down', 'up'], 'name': "decision"},
-            1: { range: ["#4C4", "#C44"], extremes: ['wrong', 'right'], 'name': "errors"}
+            3: { range: ["#fc8d59","#91cf60"]},
+            2: { range: ["#fc8d59","#91cf60"]},
+            1: { range: ["#91cf60", "#fc8d59"]}
 
         };
 
@@ -135,27 +132,33 @@ ccviz.controller.series_users = function(options)
 
                 // Populate user field filter
 
-                var user_combo_fields = {'education_level':{}, 'age_range':{}, 'gender':{}};
+                var user_combo_fields = {'education_level':{},
+                                        'age_range':{},
+                                        'gender':{}
+                };
 
-                self.fill_combo_fields_user(user_combo_fields, my_data);
+                var reverse_user_combo_fields = {'ed': 'education_level',
+                                                 'agr': 'age_range',
+                                                 'gen': 'gender'};
 
-//                console.log("USER COMBO");
-//
-//                console.log(user_combo_fields);
+                var direct_user_combo_fields = {'education_level': 'ed' ,
+                                                 'age_range': 'agr',
+                                                 'gender': 'gen'};
+
+                self.fill_combo_fields_user(user_combo_fields, reverse_user_combo_fields, my_data);
 
                 var game_combo_fields = {'experiment':{}};
 
-                self.fill_combo_fields_game(game_combo_fields, my_data);
+                var reverse_game_combo_fields = {'exp': 'experiment'};
 
-//                console.log("GAME COMBO");
-//
-//                console.log(game_combo_fields);
+                self.fill_combo_fields_game(game_combo_fields, reverse_game_combo_fields, my_data);
+
 
                 $.each(user_combo_fields, function(key,value){
                     d3.select("#series_select").append("div").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
-                    d3.select("#series_select").append("select").attr("id",key).attr("type","user").attr("class","filters");
+                    d3.select("#series_select").append("select").attr("id",direct_user_combo_fields[key]).attr("type","user").attr("class","filters");
 
-                    var id = key;
+                    var id = direct_user_combo_fields[key];
 
                     $("#"+id).append($("<option />").val("all").text("All"));
 
@@ -209,6 +212,7 @@ ccviz.controller.series_users = function(options)
                             'infos': self.infos,
                             'data': my_data
                         });
+
                     self.series_chart.render(self.get_conditions(key), self.variable);
 
                 });

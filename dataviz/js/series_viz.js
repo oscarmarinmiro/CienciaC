@@ -83,14 +83,14 @@ ccviz.viz.series_users = function(options)
             var my_data = self.data['series'][number];
             self.series[number] = {};
 
-            self.series[number]['name'] = my_data.index_name;
+            self.series[number]['name'] = my_data.idx;
             self.series[number]['series'] = [];
 
             for(var i=self.MIN_SERIES_INDEX; i< self.MAX_SERIES_INDEX+1; i++){
                 self.series[number]['series'].push({
-                    'date': self.data.series[number]['rounds'][i.toString(10)]['date'],
-                    'price': self.data.series[number]['rounds'][i.toString(10)]['price'],
-                    'result': self.data.series[number]['rounds'][i.toString(10)]['result']});
+                    'date': self.data.series[number]['rnd'][i.toString(10)]['date'],
+                    'price': self.data.series[number]['rnd'][i.toString(10)]['price'],
+                    'result': self.data.series[number]['rnd'][i.toString(10)]['result']});
             }
 
         }
@@ -104,11 +104,6 @@ ccviz.viz.series_users = function(options)
 
         var user_ok = true;
         var game_ok = true;
-
-//        console.log("CHECKING CONDITIONS FOR");
-//        console.log(conditions);
-//        console.log(user_data);
-//        console.log(game_data);
 
         for(var condition in conditions.user){
             if (user_data[condition]!= conditions.user[condition]){
@@ -142,25 +137,25 @@ ccviz.viz.series_users = function(options)
         for (var i in self.data['users'])
         {
             var user_data = $.extend(true, {}, self.data['users'][i]);
-            delete user_data.games;
+            delete user_data.gam;
 
             var my_user = self.data['users'][i];
 
-            for(var j in my_user.games)
+            for(var j in my_user.gam)
             {
-                var game = my_user.games[j];
+                var game = my_user.gam[j];
 
-                var game_data = $.extend(true,{}, my_user.games[j]);
+                var game_data = $.extend(true,{}, my_user.gam[j]);
 
-                delete game_data.rounds;
+                delete game_data.rnd;
 
-                if((game.completed == 1) && (self.check_filters(user_data, game_data, conditions)))
+                if((game.com == 1) && (self.check_filters(user_data, game_data, conditions)))
                 {
-                    if (typeof(game.rounds[0]) != 'undefined')
+                    if (typeof(game.rnd[0]) != 'undefined')
                     {
                         var row = [];
 
-                        var experiment = game.rounds[0][0];
+                        var experiment = game.exp;
 
                         if(!(experiment in experiments)){
                             experiments[experiment] = 0;
@@ -168,10 +163,10 @@ ccviz.viz.series_users = function(options)
 
                         experiments[experiment]+=1;
 
-                        for (var k in game.rounds) {
+                        for (var k in game.rnd) {
 
                             if((k>= self.MIN_USER_SERIES_INDEX) && (k<self.MAX_USER_SERIES_INDEX)) {
-                                var round = game.rounds[k];
+                                var round = game.rnd[k];
 
                                 row.push({'user': user_data, 'round': round, 'game': game_data});
                             }
@@ -187,8 +182,8 @@ ccviz.viz.series_users = function(options)
 
 //        console.log(experiments);
 //        console.log("PREPARING USER DATA");
-        console.log("ROWS");
-        console.log(rows);
+//        console.log("ROWS");
+//        console.log(rows);
 
         return rows;
 
@@ -207,7 +202,7 @@ ccviz.viz.series_users = function(options)
 //        {
 //            return "#C44";
 //        }
-        if(d.user.nickname!="Average") {
+        if(d.row != 0) {
             return self.color_scale(d.round_data[self.data_field]);
         }
         else{
@@ -223,7 +218,7 @@ ccviz.viz.series_users = function(options)
     self.build_color_scale = function(){
         var my_scale_info = self.infos[self.data_field];
 
-        self.color_scale = d3.scale.linear().domain([self.data_min, self.data_max]).range([my_scale_info.range[0], my_scale_info.range[1]]).clamp(true);
+        self.color_scale = d3.scale.linear().domain([self.data_min, (self.data_min+self.data_max)/2, self.data_max]).range([my_scale_info.range[0],"#ffffbf", my_scale_info.range[1]]).clamp(true);
         self.avg_color_scale = d3.scale.linear().domain([self.avg_min, self.avg_max]).range([my_scale_info.range[0], my_scale_info.range[1]]).clamp(true);
 
     };
@@ -296,7 +291,7 @@ ccviz.viz.series_users = function(options)
 
     self.render = function(conditions, data_field)
     {
-        self.series_number = conditions.game.series;
+        self.series_number = conditions.game.ser;
 
         console.log("Rendering series number:");
         console.log(self.series_number);
@@ -331,7 +326,7 @@ ccviz.viz.series_users = function(options)
             }
 }
 
-        rows = rows.sort(function(a,b){ return sortAlphaNum(a[0].round[0],b[0].round[0])});
+        rows = rows.sort(function(a,b){ return sortAlphaNum(a[0].game.exp,b[0].game.exp)});
 
 //        console.log(rows);
 
@@ -345,7 +340,7 @@ ccviz.viz.series_users = function(options)
         for(var i in rows){
             for(var j in rows[i]){
                 var round_data = rows[i][j].round;
-                var experiment = rows[i][j].round[0];
+                var experiment = rows[i][j].game.exp;
                 var user = rows[i][j].user;
 
                 var column = parseInt(j,10);
@@ -380,12 +375,12 @@ ccviz.viz.series_users = function(options)
             var round_data = [];
             for(var k=0; k< self.data_field; k++) { round_data.push(0);}
 
-            console.log(my_avgs_count[i]);
-            console.log(my_avgs_total[i]);
+//            console.log(my_avgs_count[i]);
+//            console.log(my_avgs_total[i]);
 
             round_data.push(my_avgs_total[i]/my_avgs_count[i]);
-            my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
-            avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
+            my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
+            avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
 
         }
 
@@ -407,7 +402,8 @@ ccviz.viz.series_users = function(options)
         var hor_scale = d3.scale.linear().domain([0,(self.MAX_USER_SERIES_INDEX-self.MIN_USER_SERIES_INDEX)-1]).range([self.left_time,self.right_time]);
 
         // rows.length+1 b/c of average
-        var ver_scale = d3.scale.linear().domain([0,rows.length+1]).range([0,self.height*(1-self.TIME_SERIES_HEIGHT_FACTOR-0.05)]).clamp(true);
+        // artificial +1 row, b/c == .length+2
+        var ver_scale = d3.scale.linear().domain([0,rows.length+2]).range([0,self.height*(1-self.TIME_SERIES_HEIGHT_FACTOR-0.05)]).clamp(true);
 
         var join = self.svg.selectAll("rect").data(my_data, function(d){return d.row + "," + d.column;});
 
@@ -415,7 +411,7 @@ ccviz.viz.series_users = function(options)
 
         join.enter().append("rect")
             .attr("x", function(d,i){return hor_scale(d.column-1.0  )})
-            .attr("y", function(d,i){return ver_scale(d.row)})
+            .attr("y", function(d,i){return d.row==0 ? ver_scale(d.row):ver_scale(d.row+1);})
             .attr("width", function(){return hor_scale(1)-hor_scale(0);})
             .attr("height", function(){return ver_scale(1)-ver_scale(0);})
             .style("fill", function(d,i){ return self.get_color_from_data(d)})
@@ -439,9 +435,9 @@ ccviz.viz.series_users = function(options)
 
         texts.enter().append("text")
             .attr("x", function(d,i){return hor_scale(-1.25);})
-            .attr("y", function(d,i){return ver_scale(d.row+0.8)})
+            .attr("y", function(d,i){return d.row==0? ver_scale(d.row+0.8): ver_scale(d.row+1+0.8);})
             .attr("class", "row_headers")
-            .text(function(d, i) { return d.user.nickname + " - " + d.experiment});
+            .text(function(d, i) { return d.user.nam + " - " + d.experiment});
 
 
         self.warningMessage.transition().duration(self.trans_time).style("opacity",0.0).remove();

@@ -18,7 +18,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
 from db.models import *
 
-FILE_OUT = "mr_banks.final.indent.json"
+FILE_OUT = "mr_banks.final.json"
 
 # final data [made of user vector]
 
@@ -105,7 +105,7 @@ for serie in Series.objects.all().order_by('id'):
 
     if my_serie not in my_data['series']:
         my_data['series'][my_serie] = {}
-        my_data['series'][my_serie]['idx'] = my_serie
+        my_data['series'][my_serie]['idx'] = index_name
         my_data['series'][my_serie]['trd'] = trend
         my_data['series'][my_serie]['ups'] = ups
         my_data['series'][my_serie]['rnd'] = {}
@@ -121,6 +121,6 @@ for serie in Series.objects.all().order_by('id'):
 # Final json dump (indent for debugging purposes, should be removed in production)
 
 with open(FILE_OUT,"wb") as file_out:
-    json.dump(my_data, file_out, indent = 4, separators = (',',':'))
+    json.dump(my_data, file_out, separators = (',',':'))
 
 
