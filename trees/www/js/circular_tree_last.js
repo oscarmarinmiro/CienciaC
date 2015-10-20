@@ -17,11 +17,10 @@ ccviz.viz.circularTree = function(options) {
 
     self.deactivated = {};
 
+    self.activated_seq = {};
+
 
     self.init = function() {
-
-//        self.diameter = $(window).height() > $(window).width() ? $(window).width(): $(window).height();
-//        self.diameter = $(window).width();
 
         self.diameter = self.diameter - self.chart_margin;
 
@@ -40,7 +39,7 @@ ccviz.viz.circularTree = function(options) {
         self.diagonal = d3.svg.diagonal.radial()
             .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
 
-        self.svg = d3.select("#right_frame").append("svg")
+        self.svg = d3.select("#" + options.id).append("svg")
             .attr("width", self.diameter)
             .attr("height", self.diameter)
           .append("g")
@@ -60,40 +59,36 @@ ccviz.viz.circularTree = function(options) {
 
                 d3.select(this).select(".sequence_check").property("checked", true);
 
-//                self.activated_seq[d3.select(this).attr("sequence")] = true;
+                self.activated_seq[d3.select(this).attr("sequence")] = true;
 
             });
 
             // Change the datastruct
 
-            // Select all is about removing everything in deactivated dictionary
-
             self.deactivated = {};
 
-            self.unhide_all_sequences();
 
+            // And deactivate in sorted order (from shorter to longest)
 
-//            // And deactivate in sorted order (from shorter to longest)
-//
-//            self.hide_all_sequences();
-//
-//            var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
-//
-//            console.log("DEACTIVATED");
-//            console.log(deactivated_keys);
-//
-//            $.each(deactivated_keys, function(i,d){
-//                self.deselect_a_sequence(d);
-//            });
-//
-//            var activated_keys = Object.keys(self.activated_seq).sort(function(a,b){return a.length- b.length;});
-//
-//            console.log("ACTIVATED");
-//            console.log(activated_keys);
-//
-//            $.each(activated_keys, function(i,d){
-//                self.select_a_sequence(d);
-//            });
+            self.hide_all_sequences();
+
+            var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
+
+            console.log("DEACTIVATED");
+            console.log(deactivated_keys);
+
+            $.each(deactivated_keys, function(i,d){
+                self.deselect_a_sequence(d);
+            });
+
+            var activated_keys = Object.keys(self.activated_seq).sort(function(a,b){return a.length- b.length;});
+
+            console.log("ACTIVATED");
+            console.log(activated_keys);
+
+            $.each(activated_keys, function(i,d){
+                self.select_a_sequence(d);
+            });
 
 
 
@@ -103,10 +98,6 @@ ccviz.viz.circularTree = function(options) {
         });
 
         d3.select("#deselect_all").on("click", function(){
-
-
-            self.deactivated = {};
-
             // Unselect all 'selects'
 
             d3.selectAll(".node_row").each(function(d){
@@ -117,7 +108,29 @@ ccviz.viz.circularTree = function(options) {
 
             });
 
-            self.unhide_all_sequences();
+            self.activated_seq = {};
+
+            self.hide_all_sequences();
+
+            var activated_keys = Object.keys(self.activated_seq).sort(function(a,b){return a.length- b.length;});
+
+            console.log("ACTIVATED");
+            console.log(activated_keys);
+
+            $.each(activated_keys, function(i,d){
+                self.select_a_sequence(d);
+            });
+
+            var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
+
+            console.log("DEACTIVATED");
+            console.log(deactivated_keys);
+
+            $.each(deactivated_keys, function(i,d){
+                self.deselect_a_sequence(d);
+            });
+
+
 
             var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
 
@@ -125,6 +138,7 @@ ccviz.viz.circularTree = function(options) {
                 self.deselect_a_sequence(d);
             });
 
+            console.log("DESELECT");
             return false;
         });
 
@@ -182,17 +196,36 @@ ccviz.viz.circularTree = function(options) {
 
         d3.selectAll(".node").filter(function(d,i){
 
-            return self.get_sequence_from_node(d).indexOf(sequence)==0;
+            return sequence.indexOf(self.get_sequence_from_node(d))==0;
 
         }).classed("selected_hidden", true);
 
     };
+
+    self.select_a_sequence = function(sequence){
+
+        d3.selectAll(".node").filter(function(d,i){
+
+            return sequence.indexOf( self.get_sequence_from_node(d))==0;
+
+        }).classed("selected_hidden", false);
+
+    };
+
 
     self.unhide_all_sequences = function(){
 
         d3.selectAll(".node").classed("selected_hidden", false)
 
     };
+
+    self.hide_all_sequences = function(){
+
+        d3.selectAll(".node").classed("selected_hidden", true)
+
+    };
+
+
 
 
     self.select_nodes_with_sequence = function(node_sequence){
@@ -201,7 +234,7 @@ ccviz.viz.circularTree = function(options) {
 
             var node = d3.select(this);
 
-            var over = self.get_sequence_from_node(d).indexOf(node_sequence)==0;
+            var over = node_sequence.indexOf(self.get_sequence_from_node(d))==0;
 
             node.classed("over", over);
             node.classed("non_over", !over);
@@ -276,6 +309,8 @@ ccviz.viz.circularTree = function(options) {
 
             var node_string = self.get_sequence_from_node(d);
 
+            self.activated_seq[node_string] = true;
+
 //            my_html+='<div class="node_row">'+ node_html;
 
 
@@ -317,14 +352,16 @@ ccviz.viz.circularTree = function(options) {
 
             var sequence = d3.select(this.parentNode.parentNode).attr("sequence");
 
-            // Activate all nodes
+            // Hide all sequences
 
-            self.unhide_all_sequences();
+            self.hide_all_sequences();
 
             // Update deactivated
 
             if ($this.is(':checked')) {
                 // the checkbox was checked
+
+                self.activated_seq[sequence] = true;
 
                 delete self.deactivated[sequence];
 
@@ -334,15 +371,34 @@ ccviz.viz.circularTree = function(options) {
 
                  self.deactivated[sequence] = true;
 
+                delete self.activated_seq[sequence];
+
             }
 
-            // And deactivate in sorted order (from shorter to longest)
 
             var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
+
+            console.log("DEACTIVATED");
+            console.log(deactivated_keys);
 
             $.each(deactivated_keys, function(i,d){
                 self.deselect_a_sequence(d);
             });
+
+            // And deactivate in sorted order (from shorter to longest)
+
+            var activated_keys = Object.keys(self.activated_seq).sort(function(a,b){return a.length- b.length;});
+
+            console.log("ACTIVATED");
+            console.log(activated_keys);
+
+            $.each(activated_keys, function(i,d){
+                self.select_a_sequence(d);
+            });
+
+
+
+
         });
 
 
