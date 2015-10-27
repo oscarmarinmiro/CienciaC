@@ -22,7 +22,7 @@ ccviz.viz.series_users = function(options)
     self.MIN_SERIES_INDEX = 1;
     self.MAX_SERIES_INDEX = 25;
     self.MIN_USER_SERIES_INDEX = 1;
-    self.MAX_USER_SERIES_INDEX = 25;
+    self.MAX_USER_SERIES_INDEX = 26;
     self.CIRCLE_RADIUS = 5;
     self.TITLE_OFFSET = 30;
 
@@ -149,6 +149,8 @@ ccviz.viz.series_users = function(options)
 
                 delete game_data.rnd;
 
+                // If completed and filter pass and rnd[0] != undefined ==>
+
                 if((game.com == 1) && (self.check_filters(user_data, game_data, conditions)))
                 {
                     if (typeof(game.rnd[0]) != 'undefined')
@@ -165,7 +167,10 @@ ccviz.viz.series_users = function(options)
 
                         for (var k in game.rnd) {
 
-                            if((k>= self.MIN_USER_SERIES_INDEX) && (k<self.MAX_USER_SERIES_INDEX)) {
+                            var real_round = parseInt(k)+1;
+
+
+                            if((real_round>= self.MIN_USER_SERIES_INDEX) && (real_round<=self.MAX_USER_SERIES_INDEX)) {
                                 var round = game.rnd[k];
 
                                 row.push({'user': user_data, 'round': round, 'game': game_data});
@@ -247,7 +252,7 @@ ccviz.viz.series_users = function(options)
         self.right_time = x_scale(data.length-1);
 
         var lineFunction = d3.svg.line()
-                              .x(function(d,i) { return x_scale(i); })
+                              .x(function(d,i) { return x_scale(i) - (x_scale(0.5)-x_scale(0)); })
                               .y(function(d) { return y_scale(d.price);})
                              .interpolate("linear");
 
@@ -259,7 +264,7 @@ ccviz.viz.series_users = function(options)
 
        var circles = self.time_svg.selectAll("circle").data(data, function(d,i){ return i;});
 
-       circles.enter().append("circle").attr("cx", function(d,i){ return x_scale(i);})
+       circles.enter().append("circle").attr("cx", function(d,i){ return x_scale(i) - (x_scale(0.5)-x_scale(0));})
            .attr("cy", function(d,i){ return y_scale(d.price)})
            .attr("r", self.CIRCLE_RADIUS)
            .attr("fill", function(d,i) {
@@ -282,10 +287,10 @@ ccviz.viz.series_users = function(options)
 
         var numbers = self.time_svg.selectAll(".line_numbers").data(data, function(d,i){return i;});
 
-        numbers.enter().append("text").attr("x", function(d,i){ return x_scale(i);})
+        numbers.enter().append("text").attr("x", function(d,i){ return x_scale(i) - (x_scale(0.5)-x_scale(0));})
            .attr("y", function(d,i){ return y_scale(d.price)+self.CIRCLE_RADIUS*4})
             .attr("class", "line_numbers")
-           .text(function(d,i){return (i+1);});
+           .text(function(d,i){return (i);});
 
     };
 
@@ -304,6 +309,12 @@ ccviz.viz.series_users = function(options)
         // Time series
 
         var data = self.series[self.series_number.toString(10)].series;
+
+        data.unshift(data[0]);
+
+        console.log("TIME SERIES DATA");
+
+        console.log(data);
 
         self.render_series(data);
 
