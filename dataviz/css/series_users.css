@@ -20,7 +20,7 @@
 .time_title
 {
     font-family: "Helvetica Neue";
-    font-size: 20px;
+    font-size:18px;
     text-anchor: middle;
 }
 
@@ -76,3 +76,47 @@ select{
     width:100px;
 }
 
+/*AXIS*/
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: #AAA;
+  stroke-dasharray: 2,2;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.axis .minor line {
+  stroke: #AAA;
+  stroke-dasharray: 2,2;
+}
+
+.x.axis path {
+    fill:none;
+    stroke: #AAA;
+}
+
+.y.axis .tick line{
+  stroke: #AAA;
+  stroke-dasharray: 2,2;
+
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #AAA;
+}
+
+.tick text{
+    font-size:12px;
+    font-family: Helvetica Neue, Helvetica, Arial;
+}
+
+.x.axis text{
+    visibility:hidden;
+}

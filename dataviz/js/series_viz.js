@@ -17,6 +17,7 @@ ccviz.viz.series_users = function(options)
     // Constants
 
     self.TIME_SERIES_HEIGHT_FACTOR = 0.30;
+    self.ARROW_OFFSET = 20;
     self.LEFT_MARGIN = 250;
     self.RIGHT_MARGIN = 50;
     self.MIN_SERIES_INDEX = 1;
@@ -24,7 +25,7 @@ ccviz.viz.series_users = function(options)
     self.MIN_USER_SERIES_INDEX = 1;
     self.MAX_USER_SERIES_INDEX = 26;
     self.CIRCLE_RADIUS = 5;
-    self.TITLE_OFFSET = 30;
+    self.TITLE_OFFSET = 40;
 
     self.parent_select = "#"+self.id_users;
     self.time_parent_select = "#" + self.id_time;
@@ -239,17 +240,35 @@ ccviz.viz.series_users = function(options)
 
         self.time_svg.append("text")
             .attr("x", (self.LEFT_MARGIN+(self.width-self.RIGHT_MARGIN))/2)
-            .attr("y", self.TITLE_OFFSET*0.6)
+            .attr("y", self.TITLE_OFFSET*0.6-5)
             .attr("class","time_title")
             .text(title_text);
 
         var x_scale = d3.scale.linear().domain([0,data.length-1]).range([self.LEFT_MARGIN,self.width-self.RIGHT_MARGIN]).clamp(true);
-        var y_scale = d3.scale.linear().domain([d3.min(data, function(d,i){return d.price}),d3.max(data, function(d,i){return d.price})]).range([(self.height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET,self.TITLE_OFFSET]).clamp(true);
+        var y_scale = d3.scale.linear().domain([d3.min(data, function(d,i){return d.price}),d3.max(data, function(d,i){return d.price})])
+            .range([(self.height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET - self.ARROW_OFFSET,self.TITLE_OFFSET]).clamp(true);
 
         // This variables are for user data scale reference
 
         self.left_time = x_scale(1);
         self.right_time = x_scale(data.length-1);
+
+        // EJES
+
+        var xAxis = d3.svg.axis().scale(x_scale).ticks(25).orient("top").tickSize(((self.height*self.TIME_SERIES_HEIGHT_FACTOR) -self.TITLE_OFFSET -self.TITLE_OFFSET- self.ARROW_OFFSET)),
+            yAxis = d3.svg.axis().scale(y_scale).ticks(5).orient("right").tickSize(self.width-self.RIGHT_MARGIN-self.LEFT_MARGIN);
+
+          // Add the x-axis.
+          self.time_svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate("+(- (x_scale(0.5)-x_scale(0))) +"," + ((self.height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET - self.ARROW_OFFSET) + ")")
+              .call(xAxis);
+
+          // Add the y-axis.
+          self.time_svg.append("g")
+              .attr("class", "y axis")
+              .attr("transform", "translate(" + (self.LEFT_MARGIN - (x_scale(0.5)-x_scale(0))) + ",0)")
+              .call(yAxis);
 
         var lineFunction = d3.svg.line()
                               .x(function(d,i) { return x_scale(i) - (x_scale(0.5)-x_scale(0)); })
@@ -287,10 +306,25 @@ ccviz.viz.series_users = function(options)
 
         var numbers = self.time_svg.selectAll(".line_numbers").data(data, function(d,i){return i;});
 
-        numbers.enter().append("text").attr("x", function(d,i){ return x_scale(i) - (x_scale(0.5)-x_scale(0));})
-           .attr("y", function(d,i){ return y_scale(d.price)+self.CIRCLE_RADIUS*4})
+        numbers.enter().append("text").filter(function(d,i){ return i!=0;}).attr("x", function(d,i){ return x_scale(i+1) - (x_scale(0.5)-x_scale(0));})
+           .attr("y", function(d,i){ return (self.height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET - self.ARROW_OFFSET+20;})
             .attr("class", "line_numbers")
-           .text(function(d,i){return (i);});
+           .text(function(d,i){return (i+1);});
+
+        console.log("ARROWS!!");
+
+        var arrows = self.time_svg.selectAll(".arrows").data(data, function(d,i){return i;});
+
+        arrows.enter().append("image").filter(function(d,i){ return i!=0;})
+            .attr("class", "minus")
+            .attr("x", function(d,i){return x_scale(i+1) - (x_scale(0.5)-x_scale(0)) -10;})
+            .attr("y", (self.height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET - self.ARROW_OFFSET + 27.5)
+            .attr("width", "20px")
+            .attr("height", "20px")
+            .attr("xlink:href", function(d,i){return d.result=== 1 ? "img/arrow_up.png":"img/arrow_down.png" ;});
+
+
+
 
     };
 
