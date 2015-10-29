@@ -71,12 +71,12 @@ ccviz.controller.series_users = function(options)
     $(document).ready(function()
     {
 
-        var series_select_text = '<div>Select series</div><select id="series_dropdown"></select>' +
-            '<div>Select variable</div><select id="variable_dropdown"></select>';
+        var series_select_text = '<div class="left">Series</div><select class="left" id="series_dropdown"></select>' +
+            '<div class="left">Variable</div><select class="left" id="variable_dropdown"></select>' +
+            '<div class="left">Method</div><select class="left" id="method_dropdown"></select>';
 
         var inject_string =
-            [   '<div id="zona_opciones" class="zona_opciones"><div id="series_select">'+ series_select_text + '</div></div>',
-                '<div id="zona_info" class="zona_info"></div>',
+            [   '<div><div id="series_select">'+ series_select_text + '</div></div><div style="float:none;clear:both"></div>',
                 '<div id="zona_viz" class="zona_viz"><div id="time_series"></div><div id="users_series"></div></div>'
             ].join('\n');
 
@@ -130,6 +130,26 @@ ccviz.controller.series_users = function(options)
                     series.trigger("change");
                 });
 
+                // Populate method filter
+
+                var method_dict = {1: 'average', 2: 'standard deviation'};
+
+                // Hardcode initial method
+
+                self.method = method_dict['1'];
+
+                var method = $("#method_dropdown");
+
+                $.each(method_dict, function (key, value){
+                    method.append($("<option/>").val(key).text(value));
+                });
+
+                method.change(function(){
+                    self.method = method_dict[$(this).val()];
+                    series.trigger("change");
+                });
+
+
                 // Populate user field filter
 
                 var user_combo_fields = {'education_level':{},
@@ -155,7 +175,7 @@ ccviz.controller.series_users = function(options)
 
 
                 $.each(user_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
+                    d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
                     d3.select("#series_select").append("select").attr("id",direct_user_combo_fields[key]).attr("type","user").attr("class","filters");
 
                     var id = direct_user_combo_fields[key];
@@ -168,7 +188,7 @@ ccviz.controller.series_users = function(options)
                 });
 
                 $.each(game_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
+                    d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
                     d3.select("#series_select").append("select").attr("id",key).attr("type","game").attr("class","filters");
 
                     var id = key;
@@ -204,7 +224,7 @@ ccviz.controller.series_users = function(options)
                             'id_time': "time_series",
                             'id_users': "users_series",
                             'width': $("#zona_viz").width(),
-                            'height':$( document ).height(),
+                            'height':$( document ).height() - $("#series_select").height(),
                             'trans_time': self.trans_time,
                             'loading_message':"Loading data...",
                             'up_color': "#4C4",
@@ -213,7 +233,7 @@ ccviz.controller.series_users = function(options)
                             'data': my_data
                         });
 
-                    self.series_chart.render(self.get_conditions(key), self.variable);
+                    self.series_chart.render(self.get_conditions(key), self.variable, self.method);
 
                 });
 

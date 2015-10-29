@@ -323,12 +323,48 @@ ccviz.viz.series_users = function(options)
             .attr("height", "20px")
             .attr("xlink:href", function(d,i){return d.result=== 1 ? "img/arrow_up.png":"img/arrow_down.png" ;});
 
+    };
 
+    self.get_std_dev_from_series = function(std_dev_column_series){
+
+        function average(data){
+          var sum = data.reduce(function(sum, value){
+            return sum + value;
+          }, 0);
+
+          var avg = sum / data.length;
+          return avg;
+        }
+
+        function standardDeviation(values){
+          var avg = average(values);
+
+          var squareDiffs = values.map(function(value){
+            var diff = value - avg;
+            var sqrDiff = diff * diff;
+            return sqrDiff;
+          });
+
+          var avgSquareDiff = average(squareDiffs);
+
+          var stdDev = Math.sqrt(avgSquareDiff);
+          return stdDev;
+        }
+
+
+        $.each(std_dev_column_series, function(i,d){
+            console.log("======");
+            console.log(d);
+            console.log(d.join(","));
+            console.log("======");
+            std_dev_column_series[i] = standardDeviation(d);
+        });
 
 
     };
 
-    self.render = function(conditions, data_field)
+
+    self.render = function(conditions, data_field, method)
     {
         self.series_number = conditions.game.ser;
 
@@ -338,7 +374,14 @@ ccviz.viz.series_users = function(options)
         console.log("Conditions");
         console.log(conditions);
 
+        console.log("Method");
+        console.log(method);
+
         self.data_field = data_field;
+
+        // 'average' or 'standard deviation'
+
+        self.method = method;
 
         // Time series
 
@@ -380,6 +423,8 @@ ccviz.viz.series_users = function(options)
         var my_avgs_total = {};
         var my_avgs_count = {};
 
+        var std_dev_column_series = {};
+
         var max_column = 0;
 
         for(var i in rows){
@@ -403,6 +448,12 @@ ccviz.viz.series_users = function(options)
                     my_avgs_count[column] = 0;
                 }
 
+                if(!(column in std_dev_column_series)){
+                    std_dev_column_series[column] = [];
+                }
+
+                std_dev_column_series[column].push(round_data[self.data_field]);
+
                 my_avgs_total[column]+= round_data[self.data_field];
                 my_avgs_count[column]+=1;
             }
@@ -414,6 +465,16 @@ ccviz.viz.series_users = function(options)
 
         var avg_data = [];
 
+        console.log("STD_DEVS");
+
+        console.log(std_dev_column_series);
+
+        self.get_std_dev_from_series(std_dev_column_series);
+
+        console.log("STD_DEVS 2");
+
+        console.log(std_dev_column_series);
+
 
         for(var i=0; i<max_column+1; i++)
         {
@@ -423,9 +484,18 @@ ccviz.viz.series_users = function(options)
 //            console.log(my_avgs_count[i]);
 //            console.log(my_avgs_total[i]);
 
-            round_data.push(my_avgs_total[i]/my_avgs_count[i]);
-            my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
-            avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
+            if(self.method == "average") {
+                round_data.push(my_avgs_total[i] / my_avgs_count[i]);
+                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
+                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
+            }
+            // Standard deviation
+            else{
+                round_data.push(std_dev_column_series[i]);
+                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+            }
+
 
         }
 
