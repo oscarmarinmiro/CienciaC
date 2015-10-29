@@ -97,6 +97,22 @@ body,html{
 
 }
 
+#infobox
+{
+    position: absolute;
+    left: 20px;
+    top: 70px;
+    padding: 8px;
+    font-size: 12px;
+    background: #fff;
+    border: solid 1px #000;
+    z-order: 1000;
+    color: black;
+    width: 170px;
+    font-family: Helvetica Neue, Helvetica, Arial;
+
+}
+
 
 select{
     width:100px;
@@ -145,4 +161,13 @@ select{
 
 .x.axis text{
     visibility:hidden;
+}
+
+.legendAvg text{
+    font-size:12px;
+}
+
+
+.legendUsers text{
+    font-size:12px;
 }

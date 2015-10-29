@@ -8,7 +8,8 @@
       "jquery": "latest",
       "d3": "latest",
       "moment": "latest",
-      "metrics-graphics": "latest"
+      "metrics-graphics": "latest",
+      "d3-legend": "latest"
 
   },
   "description": "viz lib",

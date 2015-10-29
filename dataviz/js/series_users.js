@@ -83,12 +83,14 @@ ccviz.controller.series_users = function(options)
 
         $(self.parent_select).html(inject_string);
 
+        d3.select("body").append("div").attr("id","infobox").html();
+
         // Scale info
 
         self.infos = {
-            3: { range: ["#fc8d59","#91cf60"]},
-            2: { range: ["#fc8d59","#91cf60"]},
-            1: { range: ["#91cf60", "#fc8d59"]}
+            3: { range: ["#fc8d59","#ffffbf","#91cf60"]},
+            2: { range: ["#fc8d59","#ffffbf","#91cf60"]},
+            1: { range: ["#91cf60","#ffffbf","#fc8d59"]}
 
         };
 
@@ -233,7 +235,7 @@ ccviz.controller.series_users = function(options)
                             'data': my_data
                         });
 
-                    self.series_chart.render(self.get_conditions(key), self.variable, self.method);
+                    self.series_chart.render(self.get_conditions(key), self.variable, variables_dict[self.variable], self.method);
 
                 });
 

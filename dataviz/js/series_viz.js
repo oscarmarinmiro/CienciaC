@@ -218,14 +218,37 @@ ccviz.viz.series_users = function(options)
 
     };
 
+    self.fill_info_box = function(data_name){
+
+        var my_html = "";
+
+        my_html+="You're seeing the <strong>" + data_name + " </strong> variable; ";
+
+        my_html+= "<strong>" + data_name + " </strong>";
+
+        if(data_name === "error"){
+            my_html+=" is expressed as -1 in case of error guessing points and +1 in case of success.";
+        }
+        if(data_name === "elapsed time"){
+            my_html+=" is the time elapsed between points in series, measured in seconds.";
+        }
+        if(data_name === "decision"){
+            my_html+=" is expressed as +1 if the user decides that the point will go up, -1 if the user decides that the point will go up";
+        }
+
+
+        d3.select("#infobox").html(my_html);
+
+    };
+
 
     // Build scale that corresponds to data_field, based in self.infos from controller
 
     self.build_color_scale = function(){
         var my_scale_info = self.infos[self.data_field];
 
-        self.color_scale = d3.scale.linear().domain([self.data_min, (self.data_min+self.data_max)/2, self.data_max]).range([my_scale_info.range[0],"#ffffbf", my_scale_info.range[1]]).clamp(true);
-        self.avg_color_scale = d3.scale.linear().domain([self.avg_min, self.avg_max]).range([my_scale_info.range[0], my_scale_info.range[1]]).clamp(true);
+        self.color_scale = d3.scale.linear().domain([self.data_min, (self.data_min+self.data_max)/2, self.data_max]).range([my_scale_info.range[0], my_scale_info.range[1], my_scale_info.range[2]]).clamp(true);
+        self.avg_color_scale = d3.scale.linear().domain([self.avg_min, (self.avg_min+self.avg_max)/2, self.avg_max]).range([my_scale_info.range[0], my_scale_info.range[1], my_scale_info.range[2]]).clamp(true);
 
     };
 
@@ -364,7 +387,7 @@ ccviz.viz.series_users = function(options)
     };
 
 
-    self.render = function(conditions, data_field, method)
+    self.render = function(conditions, data_field, data_name, method)
     {
         self.series_number = conditions.game.ser;
 
@@ -373,6 +396,8 @@ ccviz.viz.series_users = function(options)
 
         console.log("Conditions");
         console.log(conditions);
+        console.log(data_field);
+        console.log(data_name);
 
         console.log("Method");
         console.log(method);
@@ -554,6 +579,56 @@ ccviz.viz.series_users = function(options)
             .attr("class", "row_headers")
             .text(function(d, i) { return d.user.nam + " - " + d.experiment});
 
+
+        // SCALES LEGEND
+
+        // USERS
+
+        self.svg.append("g")
+          .attr("class", "legendUsers")
+          .attr("transform", "translate(20,100)");
+
+        var legendUsers = d3.legend.color()
+          .shapeWidth(20)
+          .orient('vertical')
+          .scale(self.color_scale);
+
+        self.svg.select(".legendUsers")
+          .call(legendUsers);
+
+        // AVG - STDDEV
+
+        self.svg.append("g")
+          .attr("class", "legendAvg")
+          .attr("transform", "translate(20,25)");
+
+
+        var legendAvg = d3.legend.color()
+          .shapeWidth(20)
+          .orient('horizontal')
+          .scale(self.avg_color_scale);
+
+        self.svg.select(".legendAvg")
+          .call(legendAvg);
+
+        // SCALES TEXT
+
+        self.svg.append("g")
+            .attr("class", "titleUsers")
+            .attr("transform", "translate(20,90)")
+            .append("text").text(function(){return "Users scale"});
+
+        // AVG - STDEV
+
+        self.svg.append("g")
+            .attr("class", "titleAvg")
+            .attr("transform", "translate(20,12)")
+            .append("text").text(function(){return self.method === "average" ? "Average scale": "StdDev scale"});
+
+
+        // fill info box
+
+        self.fill_info_box(data_name);
 
         self.warningMessage.transition().duration(self.trans_time).style("opacity",0.0).remove();
     };
