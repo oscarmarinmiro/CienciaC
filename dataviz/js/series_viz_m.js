@@ -88,14 +88,14 @@ ccviz.viz.series_users = function(options)
             var my_data = self.data['series'][number];
             self.series[number] = {};
 
-            self.series[number]['name'] = my_data.index_name;
+            self.series[number]['name'] = my_data.idx;
             self.series[number]['series'] = [];
 
             for(var i=self.MIN_SERIES_INDEX; i< self.MAX_SERIES_INDEX+1; i++){
                 self.series[number]['series'].push({
-                    'date': self.data.series[number]['rounds'][i.toString(10)]['date'],
-                    'price': self.data.series[number]['rounds'][i.toString(10)]['price'],
-                    'result': self.data.series[number]['rounds'][i.toString(10)]['result']});
+                    'date': self.data.series[number]['rnd'][i.toString(10)]['date'],
+                    'price': self.data.series[number]['rnd'][i.toString(10)]['price'],
+                    'result': self.data.series[number]['rnd'][i.toString(10)]['result']});
             }
 
         }
@@ -115,30 +115,34 @@ ccviz.viz.series_users = function(options)
 //        console.log(user_data);
 //        console.log(game_data);
 
-        for(var condition in conditions.user){
-            if (user_data[condition]!= conditions.user[condition]){
-                user_ok = false;
-            }
-        }
-
         for(var condition in conditions.game){
             if (game_data[condition]!= conditions.game[condition]){
                 game_ok = false;
             }
         }
 
+
+        for(var condition in conditions.user){
+            if (user_data[condition]!= conditions.user[condition]){
+                user_ok = false;
+            }
+        }
+
+
 //        console.log("USER OK");
 //        console.log(user_ok);
 //        console.log("GAME OK");
 //        console.log(game_ok);
+
+//        console.log("retorno " + (game_ok && user_ok));
 
         return (game_ok && user_ok)
     };
 
     self.prepare_users_data = function(conditions){
 
-        console.log("PREPARE_USERS_DATA_WITH_CONDITIONS");
-        console.log(conditions);
+//        console.log("PREPARE_USERS_DATA_WITH_CONDITIONS");
+//        console.log(conditions);
 
         var experiments = {};
 
@@ -146,44 +150,56 @@ ccviz.viz.series_users = function(options)
 
         for (var i in self.data['users'])
         {
-            var user_data = $.extend(true, {}, self.data['users'][i]);
-            delete user_data.games;
+            var user_data = $.extend(false, {}, self.data['users'][i]);
+            delete user_data.gam;
 
             var my_user = self.data['users'][i];
 
-            for(var j in my_user.games)
+            for(var j in my_user.gam)
             {
-                var game = my_user.games[j];
+                var game = my_user.gam[j];
 
-                var game_data = $.extend(true,{}, my_user.games[j]);
+                // To accelerate number crunching
 
-                delete game_data.rounds;
+                if(game.ser == self.series_number) {
 
-                if((game.completed == 1) && (self.check_filters(user_data, game_data, conditions)))
-                {
-                    if (typeof(game.rounds[0]) != 'undefined')
-                    {
-                        var row = [];
+                    var game_data = $.extend(false, {}, my_user.gam[j]);
 
-                        var experiment = game.rounds[0][0];
+//                console.log(game_data);
+//                console.log(user_data);
+//                console.log(conditions);
 
-                        if(!(experiment in experiments)){
-                            experiments[experiment] = 0;
-                        }
+                    delete game_data.rnd;
 
-                        experiments[experiment]+=1;
+                    // If completed and filter pass and rnd[0] != undefined ==>
 
-                        for (var k in game.rounds) {
+                    if ((game.com == 1) && (self.check_filters(user_data, game_data, conditions))) {
 
-                            if((k>= self.MIN_USER_SERIES_INDEX) && (k<self.MAX_USER_SERIES_INDEX)) {
-                                var round = game.rounds[k];
+                        if (typeof(game.rnd[0]) != 'undefined') {
+                            var row = [];
 
-                                row.push({'user': user_data, 'round': round, 'game': game_data});
+                            var experiment = game.exp;
+
+                            if (!(experiment in experiments)) {
+                                experiments[experiment] = 0;
                             }
 
-                        }
+                            experiments[experiment] += 1;
 
-                        rows.push(row);
+                            for (var k in game.rnd) {
+
+//                            var real_round = parseInt(k)+1;
+
+                                if ((k >= self.MIN_USER_SERIES_INDEX) && (k < self.MAX_USER_SERIES_INDEX)) {
+                                    var round = game.rnd[k];
+
+                                    row.push({'user': user_data, 'round': round, 'game': game_data});
+                                }
+
+                            }
+
+                            rows.push(row);
+                        }
                     }
                 }
             }
@@ -299,15 +315,59 @@ ccviz.viz.series_users = function(options)
 
     };
 
-    self.render = function(conditions, data_field)
+    self.get_std_dev_from_series = function(std_dev_column_series){
+
+        function average(data){
+          var sum = data.reduce(function(sum, value){
+            return sum + value;
+          }, 0);
+
+          var avg = sum / data.length;
+          return avg;
+        }
+
+        function standardDeviation(values){
+          var avg = average(values);
+
+          var squareDiffs = values.map(function(value){
+            var diff = value - avg;
+            var sqrDiff = diff * diff;
+            return sqrDiff;
+          });
+
+          var avgSquareDiff = average(squareDiffs);
+
+          var stdDev = Math.sqrt(avgSquareDiff);
+          return stdDev;
+        }
+
+
+        $.each(std_dev_column_series, function(i,d){
+//            console.log("======");
+//            console.log(d);
+//            console.log(d.join(","));
+//            console.log("======");
+            std_dev_column_series[i] = standardDeviation(d);
+        });
+
+
+    };
+
+
+    self.render = function(conditions, data_field, method)
     {
-        self.series_number = conditions.game.series;
+        self.series_number = conditions.game.ser;
 
         console.log("Rendering series number:");
         console.log(self.series_number);
 
         console.log("Conditions");
         console.log(conditions);
+
+        self.method = method;
+
+        console.log("METHOD");
+        console.log(self.method);
 
         self.data_field = data_field;
 
@@ -322,6 +382,10 @@ ccviz.viz.series_users = function(options)
 
         var rows = self.prepare_users_data(conditions);
 
+//        console.log("USER SERIES");
+//
+//        console.log(rows);
+
         var reA = /[^a-zA-Z]/g;
         var reN = /[^0-9]/g;
         function sortAlphaNum(a,b) {
@@ -335,8 +399,7 @@ ccviz.viz.series_users = function(options)
                 return aA > bA ? 1 : -1;
             }
 }
-
-        rows = rows.sort(function(a,b){ return sortAlphaNum(a[0].round[0],b[0].round[0])});
+        rows = rows.sort(function(a,b){ return sortAlphaNum(a[0].game.exp,b[0].game.exp)});
 
 //        console.log(rows);
 
@@ -345,12 +408,14 @@ ccviz.viz.series_users = function(options)
         var my_avgs_total = {};
         var my_avgs_count = {};
 
+        var std_dev_column_series = {};
+
         var max_column = 0;
 
         for(var i in rows){
             for(var j in rows[i]){
                 var round_data = rows[i][j].round;
-                var experiment = rows[i][j].round[0];
+                var experiment = rows[i][j].game.exp;
                 var user = rows[i][j].user;
 
                 var column = parseInt(j,10);
@@ -368,6 +433,12 @@ ccviz.viz.series_users = function(options)
                     my_avgs_count[column] = 0;
                 }
 
+                if(!(column in std_dev_column_series)){
+                    std_dev_column_series[column] = [];
+                }
+
+                std_dev_column_series[column].push(round_data[self.data_field]);
+
                 my_avgs_total[column]+= round_data[self.data_field];
                 my_avgs_count[column]+=1;
             }
@@ -379,6 +450,16 @@ ccviz.viz.series_users = function(options)
 
         var avg_data = [];
 
+//        console.log("STD_DEVS");
+//
+//        console.log(std_dev_column_series);
+
+        self.get_std_dev_from_series(std_dev_column_series);
+
+//        console.log("STD_DEVS 2");
+//
+//        console.log(std_dev_column_series);
+
 
         for(var i=0; i<max_column+1; i++)
         {
@@ -388,9 +469,18 @@ ccviz.viz.series_users = function(options)
 //            console.log(my_avgs_count[i]);
 //            console.log(my_avgs_total[i]);
 
-            round_data.push(my_avgs_total[i]/my_avgs_count[i]);
-            my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
-            avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
+            if(self.method == "average") {
+                round_data.push(my_avgs_total[i] / my_avgs_count[i]);
+                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
+                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
+            }
+            else
+            {
+                round_data.push(std_dev_column_series[i]);
+                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+
+            }
 
         }
 

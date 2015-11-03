@@ -18,7 +18,7 @@ ccviz.controller.series_users = function(options)
 
 
     self.get_conditions = function(key){
-        var conditions = {'game':{'series':parseInt(key,10)}};
+        var conditions = {'game':{'ser':parseInt(key,10)}};
 
         // Get filter values
 
@@ -42,25 +42,25 @@ ccviz.controller.series_users = function(options)
         return conditions;
     };
 
-    self.fill_combo_fields_user = function(user_combo_fields, my_data){
+    self.fill_combo_fields_user = function(user_combo_fields, reverse_user_combo_fields, my_data){
 
         $.each(my_data.users, function(i,d){
             $.each(d, function (key,value){
-                if((key in user_combo_fields) && (!(value in user_combo_fields[key]))){
-                    user_combo_fields[key][value] = true;
+                if((key in reverse_user_combo_fields) && (!(value in user_combo_fields[reverse_user_combo_fields[key]]))){
+                    user_combo_fields[reverse_user_combo_fields[key]][value] = true;
                 }
             });
         });
 
     };
 
-    self.fill_combo_fields_game = function(game_combo_fields, my_data){
+    self.fill_combo_fields_game = function(game_combo_fields, reverse_game_combo_fields,my_data){
 
         $.each(my_data.users, function(i,d){
-            $.each(d.games, function (i,d){
+            $.each(d.gam, function (i,d){
                 $.each(d, function (key,value) {
-                    if((key in game_combo_fields) && (!(value in game_combo_fields[key]))){
-                        game_combo_fields[key][value] = true;
+                    if((key in reverse_game_combo_fields) && (!(value in game_combo_fields[reverse_game_combo_fields[key]]))){
+                        game_combo_fields[reverse_game_combo_fields[key]][value] = true;
                     }
                 });
             });
@@ -74,7 +74,9 @@ ccviz.controller.series_users = function(options)
     $(document).ready(function()
     {
 
-        var series_select_text = '<div style="float:left;">Select variable</div><select style="float:left;margin-left:5px;margin-right:10px;" id="variable_dropdown"></select>';
+        var series_select_text = '<div class="left">Select variable</div><select class="left" id="variable_dropdown"></select>';
+
+        series_select_text+= '<div class="left" >Select display method</div><select class="left" id="method_dropdown"></select>';
 
         var inject_string =
             [   '<div id="zona_opciones" class="zona_opciones"><div id="series_select">'+ series_select_text + '</div></div>',
@@ -142,21 +144,58 @@ ccviz.controller.series_users = function(options)
                     self.render_s();
                 });
 
+                // Populate method filter
+
+                var method_dict = {1: 'average', 2: 'standard deviation'};
+
+                var methods = $("#method_dropdown");
+
+                $.each(method_dict, function (key,value){
+                    methods.append($("<option />").val(key).text(value));
+                });
+
+                methods.change(function(){
+                    self.method = method_dict[$(this).val()];
+                    self.render_s();
+                });
+
+                // Hardcode initial method
+
+                self.method = method_dict['1'];
+
                 // Populate user field filter
 
-                var user_combo_fields = {'education_level':{}, 'age_range':{}, 'gender':{}};
+                var user_combo_fields = {'education_level':{},
+                                        'age_range':{},
+                                        'gender':{}
+                };
 
-                self.fill_combo_fields_user(user_combo_fields, my_data);
+                var reverse_user_combo_fields = {'ed': 'education_level',
+                                                 'agr': 'age_range',
+                                                 'gen': 'gender'};
+
+                var direct_user_combo_fields = {'education_level': 'ed' ,
+                                                 'age_range': 'agr',
+                                                 'gender': 'gen'};
+
+                self.fill_combo_fields_user(user_combo_fields, reverse_user_combo_fields, my_data);
+
+                console.log("USER COMBO");
+                console.log(user_combo_fields);
 
                 var game_combo_fields = {'experiment':{}};
 
-                self.fill_combo_fields_game(game_combo_fields, my_data);
+                var reverse_game_combo_fields = {'exp': 'experiment'};
+
+                var direct_game_combo_fields = {'experiment': 'exp'};
+
+                self.fill_combo_fields_game(game_combo_fields, reverse_game_combo_fields, my_data);
 
                 $.each(user_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").style("float","left").html(" " + key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1)+"  ");
-                    d3.select("#series_select").append("select").style("float","left").attr("id",key).attr("type","user").attr("class","filters");
+                    d3.select("#series_select").append("div").attr("class","left").html(" " + key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1)+"  ");
+                    d3.select("#series_select").append("select").attr("class","left filters").attr("id", direct_user_combo_fields[key]).attr("type","user");
 
-                    var id = key;
+                    var id = direct_user_combo_fields[key];
 
                     $("#"+id).append($("<option />").val("all").text("All"));
 
@@ -166,10 +205,10 @@ ccviz.controller.series_users = function(options)
                 });
 
                 $.each(game_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").style("float","left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
-                    d3.select("#series_select").append("select").style("float","left").attr("id",key).attr("type","game").attr("class","filters");
+                    d3.select("#series_select").append("div").attr("class","left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
+                    d3.select("#series_select").append("select").attr("class", "left filters").attr("id",direct_game_combo_fields[key]).attr("type","game");
 
-                    var id = key;
+                    var id = direct_game_combo_fields[key];
 
                     $("#"+id).append($("<option />").val("all").text("All"));
 
@@ -187,7 +226,7 @@ ccviz.controller.series_users = function(options)
 
                     for (var i = series_min; i < series_max + 1; i++) {
                         $("#viz_" + i).remove();
-                        d3.selectAll("#zona_viz").append("div").attr("id", "viz_" + i).style("float","left");
+                        d3.selectAll("#zona_viz").append("div").attr("id", "viz_" + i).style("float", "left");
                         d3.selectAll("#viz_" + i).append("div").attr("id", "time_series_" + i);
                         d3.selectAll("#viz_" + i).append("div").attr("id", "users_series_" + i);
 
@@ -204,7 +243,8 @@ ccviz.controller.series_users = function(options)
                                 'infos': self.infos,
                                 'data': my_data
                             });
-                        self.series_chart.render(self.get_conditions(i), self.variable);
+
+                        self.series_chart.render(self.get_conditions(i), self.variable, self.method);
                     }
                 };
 

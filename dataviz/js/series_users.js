@@ -173,6 +173,8 @@ ccviz.controller.series_users = function(options)
 
                 var reverse_game_combo_fields = {'exp': 'experiment'};
 
+                var direct_game_combo_fields = {'experiment': 'exp'};
+
                 self.fill_combo_fields_game(game_combo_fields, reverse_game_combo_fields, my_data);
 
 
@@ -191,9 +193,9 @@ ccviz.controller.series_users = function(options)
 
                 $.each(game_combo_fields, function(key,value){
                     d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
-                    d3.select("#series_select").append("select").attr("id",key).attr("type","game").attr("class","filters");
+                    d3.select("#series_select").append("select").attr("id",direct_game_combo_fields[key]).attr("type","game").attr("class","filters");
 
-                    var id = key;
+                    var id = direct_game_combo_fields[key];
 
                     $("#"+id).append($("<option />").val("all").text("All"));
 
@@ -235,6 +237,8 @@ ccviz.controller.series_users = function(options)
                             'data': my_data
                         });
 
+                    console.log("MANDANDO CONDICIONES!");
+                    console.log(self.get_conditions(key));
                     self.series_chart.render(self.get_conditions(key), self.variable, variables_dict[self.variable], self.method);
 
                 });
