@@ -90,9 +90,9 @@ ccviz.controller.series_users = function(options)
         // Scale info
 
         self.infos = {
-            3: { range: ["#C44", "#4C4"], extremes: ['wrong', 'right'], 'name': "errors"},
-            2: { range: ["#C44", "#4C4"], extremes: ['down', 'up'], 'name': "decision"},
-            1: { range: ["#4C4", "#C44"], extremes: ['wrong', 'right'], 'name': "errors"}
+            3: { range: ["#fc8d59","#ffffbf","#91cf60"]},
+            2: { range: ["#fc8d59","#ffffbf","#91cf60"]},
+            1: { range: ["#91cf60","#ffffbf","#fc8d59"]}
 
         };
 

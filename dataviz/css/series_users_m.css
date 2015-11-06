@@ -14,7 +14,7 @@ body,html{
 
 .zona_viz{
     float:left;
-    margin-top: 60px;
+    margin-top: 40px;
 }
 
 .series
@@ -32,14 +32,14 @@ body,html{
 .line_numbers
 {
     font-family: "Helvetica Neue";
-    font-size: 12px;
+    font-size: 10px;
     text-anchor: middle;
 }
 
 .time_title
 {
     font-family: "Helvetica Neue";
-    font-size: 20px;
+    font-size: 18px;
     text-anchor: middle;
 }
 
@@ -102,3 +102,57 @@ select{
     margin-right: 10px;
 }
 
+
+/*AXIS*/
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: #AAA;
+  stroke-dasharray: 2,2;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.axis .minor line {
+  stroke: #AAA;
+  stroke-dasharray: 2,2;
+}
+
+.x.axis path {
+    fill:none;
+    stroke: #AAA;
+}
+
+.y.axis .tick line{
+  stroke: #AAA;
+  stroke-dasharray: 2,2;
+
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #AAA;
+}
+
+.tick text{
+    font-size:10px;
+    font-family: Helvetica Neue, Helvetica, Arial;
+}
+
+.x.axis text{
+    visibility:hidden;
+}
+
+.legendAvg text{
+    font-size:12px;
+}
+
+
+.legendUsers text{
+    font-size:12px;
+}
