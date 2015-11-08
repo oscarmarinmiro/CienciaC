@@ -234,8 +234,8 @@ ccviz.controller.series_users = function(options)
                             {
                                 'id_time': "time_series_" + i,
                                 'id_users': "users_series_" + i,
-                                'width': 400,
-                                'height': 300,
+                                'width': 300,
+                                'height': 200,
                                 'trans_time': self.trans_time,
                                 'loading_message': "Loading data...",
                                 'up_color': "#4C4",

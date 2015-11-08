@@ -32,14 +32,14 @@ body,html{
 .line_numbers
 {
     font-family: "Helvetica Neue";
-    font-size: 10px;
+    font-size: 8px;
     text-anchor: middle;
 }
 
 .time_title
 {
     font-family: "Helvetica Neue";
-    font-size: 18px;
+    font-size: 15px;
     text-anchor: middle;
 }
 
@@ -140,7 +140,7 @@ select{
 }
 
 .tick text{
-    font-size:10px;
+    font-size:8px;
     font-family: Helvetica Neue, Helvetica, Arial;
 }
 

@@ -16,7 +16,7 @@ ccviz.viz.series_users = function(options)
 
     // Constants
 
-    self.TIME_SERIES_HEIGHT_FACTOR = 0.30;
+    self.TIME_SERIES_HEIGHT_FACTOR = 0.50;
     self.ARROW_OFFSET = 20;
     self.LEFT_MARGIN = 250;
     self.RIGHT_MARGIN = 50;

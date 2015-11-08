@@ -24,7 +24,7 @@ ccviz.viz.series_users = function(options)
     self.MAX_SERIES_INDEX = 25;
     self.MIN_USER_SERIES_INDEX = 1;
     self.MAX_USER_SERIES_INDEX = 26;
-    self.CIRCLE_RADIUS = 5;
+    self.CIRCLE_RADIUS = 4;
     self.TITLE_OFFSET = 30;
 
     self.parent_select = "#"+self.id_users;
@@ -340,10 +340,10 @@ ccviz.viz.series_users = function(options)
 
         arrows.enter().append("image").filter(function(d,i){ return i!=0;})
             .attr("class", "minus")
-            .attr("x", function(d,i){return x_scale(i+1) - (x_scale(0.5)-x_scale(0)) -9;})
+            .attr("x", function(d,i){return x_scale(i+1) - (x_scale(0.5)-x_scale(0)) - 7.5;})
             .attr("y", (self.height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET - self.ARROW_OFFSET + 27.5)
-            .attr("width", "18px")
-            .attr("height", "18px")
+            .attr("width", "15px")
+            .attr("height", "15px")
             .attr("xlink:href", function(d,i){return d.result=== 1 ? "img/arrow_up.png":"img/arrow_down.png" ;});
 
     };
