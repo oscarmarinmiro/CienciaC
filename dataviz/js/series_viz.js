@@ -14,6 +14,7 @@ ccviz.viz.series_users = function(options)
         self[key] = options[key];
     }
 
+
     // Constants
 
     self.TIME_SERIES_HEIGHT_FACTOR = 0.50;

@@ -4,11 +4,20 @@ body,html{
     margin:0;
 }
 
-
+#header{
+    position:fixed;
+    background-image: url('../img/arrow_down.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    height: 75px;
+    width:100%;
+}
 .series
 {
         background-color:#FFF;
         font-family: "Helvetica Neue", Helvetica, sans-serif;
+        padding-top:120px;
 }
 
 .rect_matrix
@@ -77,12 +86,38 @@ body,html{
     font-size:10px;
 }
 
+@media (min-width: 2000px){
+    .left{
+        font-size:20px;
+        margin-left: 10px;
+    }
+
+    .filters
+    {
+        margin-left: 10px;
+        font-size:20px;
+    }
+}
+
+@media (max-width: 1024px){
+    .left{
+        font-size:8px;
+        margin-left: 3px;
+    }
+
+    .filters
+    {
+        margin-left: 3px;
+        font-size:8px;
+    }
+}
+
 
 #series_select
 {
-    /*position: fixed;*/
+    position: fixed;
+    top:75px;
     /*left: 30px;*/
-    /*top: 15px;*/
     /*width:105px;*/
     /*position:fixed;*/
     padding: 8px;
@@ -90,7 +125,7 @@ body,html{
     background: #ccc;
     /*border: solid 1px #aaa;*/
     /*border-radius: 6px;*/
-    z-order:1000;
+    z-index:1000;
     color: black;
     width:100%;
     float:left;
@@ -101,7 +136,7 @@ body,html{
 {
     position: absolute;
     left: 20px;
-    top: 70px;
+    top: 160px;
     padding: 8px;
     font-size: 12px;
     background: #fff;

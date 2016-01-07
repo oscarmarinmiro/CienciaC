@@ -118,17 +118,18 @@ ccviz.controller.series_users = function(options)
 
                 // Populate variable filter
 
-                var variables_dict = {1: 'elapsed time', 2: 'decision', 3: 'error'};
+                var variables_dict = [[2, 'decision'], [1,'elapsed time'], [3,'error']];
 
                 var variables = $("#variable_dropdown");
 
-                $.each(variables_dict, function (key,value){
+                $.each(variables_dict, function (i,value){
                     //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
-                    variables.append($("<option />").val(key).text(value));
+                    variables.append($("<option />").val(value[0]).text(value[1]));
                 });
 
                 variables.change(function(){
                     self.variable = $(this).val();
+                    self.variable_name = $(this).children("option").filter(":selected").text();
                     series.trigger("change");
                 });
 
@@ -239,7 +240,7 @@ ccviz.controller.series_users = function(options)
 
                     console.log("MANDANDO CONDICIONES!");
                     console.log(self.get_conditions(key));
-                    self.series_chart.render(self.get_conditions(key), self.variable, variables_dict[self.variable], self.method);
+                    self.series_chart.render(self.get_conditions(key), self.variable, self.variable_name, self.method);
 
                 });
 
