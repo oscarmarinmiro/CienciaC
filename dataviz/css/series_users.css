@@ -26,6 +26,11 @@ body,html{
     stroke-width: 0.5px;
 }
 
+.rect_avg{
+    stroke: black;
+    stroke-width: 0.5px;
+}
+
 .line_numbers
 {
     font-family: "Helvetica Neue";
@@ -205,4 +210,8 @@ select{
 
 .legendUsers text{
     font-size:12px;
+}
+
+#users_series{
+    overflow:scroll;
 }
