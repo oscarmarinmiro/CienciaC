@@ -225,3 +225,10 @@ select{
     font-family: "Helvetica Neue";
     font-size: 20px;
 }
+
+#scales_div{
+    position: absolute;
+    left: 200px;
+    top: 200px;
+    background: #FFF;
+}

@@ -52,8 +52,10 @@ ccviz.viz.series_users = function(options)
 
         self.svg = d3.select(self.parent_select).append("svg")
             .attr("width",self.width)
-            .attr("height",self.pseudo_height*(1-self.TIME_SERIES_HEIGHT_FACTOR))
+            .attr("height",100000)
             .append("g").on("mousemove", _mousemove);
+
+        $("#users_series").css("height", self.pseudo_height);
 
         console.log("Initializing series_time... en ");
         console.log(self.time_parent_select);
@@ -62,6 +64,12 @@ ccviz.viz.series_users = function(options)
             .attr("width",self.width)
             .attr("height",self.pseudo_height*(self.TIME_SERIES_HEIGHT_FACTOR))
             .append("g").on("mousemove", _mousemove);
+
+        // Separate svg div for scales for avoiding scroll problems with matrix svg
+
+//        d3.select("#scales_div").style("left","100px").style("top","100px");
+//
+//        self.scale_svg = d3.select("#scales_div").append("svg");
 
         self.tooltip = d3.select("body").append("div")
                 .attr("id", "tooltip")
@@ -758,21 +766,31 @@ ccviz.viz.series_users = function(options)
 
             // USERS
 
-            self.svg.append("g")
-                .attr("class", "legendUsers")
-                .attr("transform", "translate(20,100)");
+            d3.select("#users_series").append("div").attr("id", "scales_div")
+                .style("left","0px")
+                .style("top",$("#users_series").offset().top+"px");
+
+            self.scale_svg = d3.select("#scales_div").append("svg")
+                            .style("height","350")
+                            .style("width","150");
+
+
+            self.scale_svg.append("g")
+              .attr("class", "legendUsers")
+              .attr("transform", "translate(20,100)");
+
 
             var legendUsers = d3.legend.color()
                 .shapeWidth(20)
                 .orient('vertical')
                 .scale(self.color_scale);
 
-            self.svg.select(".legendUsers")
+            self.scale_svg.select(".legendUsers")
                 .call(legendUsers);
-
+//
             // AVG - STDDEV
 
-            self.svg.append("g")
+            self.scale_svg.append("g")
                 .attr("class", "legendAvg")
                 .attr("transform", "translate(20,25)");
 
@@ -782,12 +800,12 @@ ccviz.viz.series_users = function(options)
                 .orient('horizontal')
                 .scale(self.avg_color_scale);
 
-            self.svg.select(".legendAvg")
+            self.scale_svg.select(".legendAvg")
                 .call(legendAvg);
 
             // SCALES TEXT
 
-            self.svg.append("g")
+            self.scale_svg.append("g")
                 .attr("class", "titleUsers")
                 .attr("transform", "translate(20,90)")
                 .append("text").text(function () {
@@ -796,7 +814,7 @@ ccviz.viz.series_users = function(options)
 
             // AVG - STDEV
 
-            self.svg.append("g")
+            self.scale_svg.append("g")
                 .attr("class", "titleAvg")
                 .attr("transform", "translate(20,12)")
                 .append("text").text(function () {
