@@ -215,3 +215,13 @@ select{
 #users_series{
     overflow:scroll;
 }
+
+.titleRowAvg{
+    text-anchor: middle;
+    font-size: 12px;
+}
+
+.textWarning{
+    font-family: "Helvetica Neue";
+    font-size: 20px;
+}

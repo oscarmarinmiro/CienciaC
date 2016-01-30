@@ -35,10 +35,12 @@ ccviz.viz.series_users = function(options)
 
     self.pseudo_height = self.height- $("#zona_viz").offset().top;
 
+    self.VOID_COLOR = "#FFF";
+
     var _mousemove = function () {
         self.tooltip
-                .style("left", (d3.event.pageX + 20) + "px")
-                .style("top", (d3.event.pageY - 12) + "px");
+                .style("right", self.width-(d3.event.pageX ) + 20 + "px")
+                .style("top", (d3.event.pageY) + "px");
     };
 
     self.init = function(){
@@ -71,10 +73,11 @@ ccviz.viz.series_users = function(options)
 
         self.warningMessage = self.svg.append("text")
             .attr("text-anchor", "middle")
-            .attr("class","chordChartTextWarning")
-            .attr("x", self.width/2)
-            .attr("y", self.pseudo_height/2)
+            .attr("class","textWarning")
+            .attr("x", (self.LEFT_MARGIN + (self.width-self.RIGHT_MARGIN))/2)
+            .attr("y", (self.pseudo_height * (1 - self.TIME_SERIES_HEIGHT_FACTOR))/2)
             .text(self.loading_message);
+
 
         self.prepare_series_data();
 
@@ -192,9 +195,9 @@ ccviz.viz.series_users = function(options)
         }
 
 //        console.log(experiments);
-//        console.log("PREPARING USER DATA");
-//        console.log("ROWS");
-//        console.log(rows);
+        console.log("PREPARING USER DATA");
+        console.log("ROWS");
+        console.log(rows);
 
         return rows;
 
@@ -214,12 +217,22 @@ ccviz.viz.series_users = function(options)
 //            return "#C44";
 //        }
         if(d.row != 0) {
-            return self.color_scale(d.round_data[self.data_field]);
+            if(d.round_data[self.data_field] === 0){
+                return self.VOID_COLOR;
+            }
+            else{
+                return self.color_scale(d.round_data[self.data_field]);
+            }
         }
         else{
-            return self.avg_color_scale(d.round_data[self.data_field]);
-        }
+//            if(d.round_data[self.data_field] === 0){
+//                return self.VOID_COLOR;
+//            }
+//            else{
+                return self.avg_color_scale(d.round_data[self.data_field]);
+//            }
 
+        }
 
     };
 
@@ -268,13 +281,40 @@ ccviz.viz.series_users = function(options)
 
         self.time_svg.append("text")
             .attr("x", (self.LEFT_MARGIN+(self.width-self.RIGHT_MARGIN))/2)
-            .attr("y", self.TITLE_OFFSET*0.6-5)
+            .attr("y", (self.TITLE_OFFSET*0.6)-5)
             .attr("class","time_title")
             .text(title_text);
+
+        // Series info button
+
+        self.time_svg.append("image")
+            .attr("class", "series_help")
+            .attr("x", self.width - self.RIGHT_MARGIN - 7.5)
+            .attr("y", self.TITLE_OFFSET*0.6 - 15)
+            .attr("width", "15px")
+            .attr("height", "15px")
+            .attr("xlink:href", "img/question_mark.png")
+            .on("mouseover", function(){
+                console.log("SERIES HELP CLICKED");
+                if (self.series_number in series_info) {
+                    var my_text = series_info[self.series_number];
+                }
+                else{
+                    var my_text = series_info['default'];
+                }
+                self.tooltip.html(my_text);
+                self.tooltip.style("opacity", 1.0);
+
+            })
+            .on("mouseout", function(){
+                self.tooltip.style("opacity", 0.0);
+            });
+
 
         var x_scale = d3.scale.linear().domain([0,data.length]).range([self.LEFT_MARGIN,self.width-self.RIGHT_MARGIN]).clamp(true);
         var y_scale = d3.scale.linear().domain([d3.min(data, function(d,i){return d.price}),d3.max(data, function(d,i){return d.price})])
             .range([(self.pseudo_height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET - self.ARROW_OFFSET,self.TITLE_OFFSET]).clamp(true);
+
 
         // This variables are for user data scale reference
 
@@ -425,277 +465,354 @@ ccviz.viz.series_users = function(options)
 
         self.render_series(data);
 
-
         // User series
 
         var rows = self.prepare_users_data(conditions);
 
-        var reA = /[^a-zA-Z]/g;
-        var reN = /[^0-9]/g;
-        function sortAlphaNum(a,b) {
-            var aA = a.replace(reA, "");
-            var bA = b.replace(reA, "");
-            if(aA === bA) {
-                var aN = parseInt(a.replace(reN, ""), 10);
-                var bN = parseInt(b.replace(reN, ""), 10);
-                return aN === bN ? 0 : aN > bN ? 1 : -1;
-            } else {
-                return aA > bA ? 1 : -1;
-            }
-}
+        console.log("ROWS USERS");
+        console.log(rows);
 
-        rows = rows.sort(function(a,b){ return sortAlphaNum(a[0].game.exp,b[0].game.exp)});
+        if(rows.length > 0) {
 
-//        console.log(rows);
 
-        var my_data = [];
+            var reA = /[^a-zA-Z]/g;
+            var reN = /[^0-9]/g;
 
-        var my_avgs_total = {};
-        var my_avgs_count = {};
-
-        var std_dev_column_series = {};
-
-        var max_column = 0;
-
-        for(var i in rows){
-            for(var j in rows[i]){
-                var round_data = rows[i][j].round;
-                var experiment = rows[i][j].game.exp;
-                var user = rows[i][j].user;
-
-                var column = parseInt(j,10);
-
-                if(column > max_column){
-                    max_column = column;
+            function sortAlphaNum(a, b) {
+                var aA = a.replace(reA, "");
+                var bA = b.replace(reA, "");
+                if (aA === bA) {
+                    var aN = parseInt(a.replace(reN, ""), 10);
+                    var bN = parseInt(b.replace(reN, ""), 10);
+                    return aN === bN ? 0 : aN > bN ? 1 : -1;
+                } else {
+                    return aA > bA ? 1 : -1;
                 }
-
-                my_data.push({'round_data': round_data, 'experiment': experiment, 'user': user, 'row': parseInt(i,10)+1, 'column': column});
-
-                if(!(column in my_avgs_total)){
-                    my_avgs_total[column] = 0.0;
-                }
-                if(!(column in my_avgs_count)){
-                    my_avgs_count[column] = 0;
-                }
-
-                if(!(column in std_dev_column_series)){
-                    std_dev_column_series[column] = [];
-                }
-
-                std_dev_column_series[column].push(round_data[self.data_field]);
-
-                my_avgs_total[column]+= round_data[self.data_field];
-                my_avgs_count[column]+=1;
-            }
-        }
-
-        console.log("AVGS");
-        console.log(my_avgs_count);
-        console.log(my_avgs_total);
-
-        var avg_data = [];
-
-        console.log("STD_DEVS");
-
-        console.log(std_dev_column_series);
-
-        self.get_std_dev_from_series(std_dev_column_series);
-
-        console.log("STD_DEVS 2");
-
-        console.log(std_dev_column_series);
-
-
-        for(var i=0; i<max_column+1; i++)
-        {
-            var round_data = [];
-            for(var k=0; k< self.data_field; k++) { round_data.push(0);}
-
-//            console.log(my_avgs_count[i]);
-//            console.log(my_avgs_total[i]);
-
-            if(self.method == "average") {
-                round_data.push(my_avgs_total[i] / my_avgs_count[i]);
-                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
-                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
-            }
-            // Standard deviation
-            else{
-                round_data.push(std_dev_column_series[i]);
-                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
-                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
             }
 
-
-        }
-
-
-        console.log(my_data);
-
-        self.data_min = d3.min(my_data, function(d){return d.round_data[self.data_field]});
-        self.data_max = d3.max(my_data, function(d){return d.round_data[self.data_field]});
-
-        self.avg_min = d3.min(avg_data, function(d){return d.round_data[self.data_field]});
-        self.avg_max = d3.max(avg_data, function(d){return d.round_data[self.data_field]});
-
-        console.log("MINIMO MAXIMO");
-        console.log(self.data_min);
-        console.log(self.data_max);
-
-        self.build_color_scale();
-
-        var hor_scale = d3.scale.linear().domain([0,(self.MAX_USER_SERIES_INDEX-self.MIN_USER_SERIES_INDEX)-1]).range([self.left_time,self.right_time]);
-
-        // rows.length+1 b/c of average
-        // artificial +1 row, b/c == .length+2
-
-        var tile_height = (self.pseudo_height*(1-self.TIME_SERIES_HEIGHT_FACTOR))/(self.VERTICAL_TILES_PAGE);
-
-        var ver_scale = d3.scale.linear().domain([0,rows.length+2]).range([0, tile_height*(rows.length+2)]).clamp(true);
-
-        var join = self.svg.selectAll("rect.rect_matrix").data(my_data, function(d){return d.row + "," + d.column;});
-
-        console.log("MY DATA MY DATA MY DATA");
-        console.log(my_data);
-
-        join.enter().append("rect")
-            .attr("x", function(d,i){return hor_scale(d.column-1.0  )})
-            .attr("y", function(d,i){return d.row==0 ? ver_scale(d.row):ver_scale(d.row+1);})
-            .attr("width", function(){return hor_scale(1)-hor_scale(0);})
-            .attr("height", function(){return ver_scale(1)-ver_scale(0);})
-            .style("fill", function(d,i){ return self.get_color_from_data(d)})
-            .attr("class", "rect_matrix")
-            .on("mouseover", function(d,i){
-                self.tooltip.html("Value: " + d.round_data[self.data_field].toFixed(2)); self.tooltip.style("opacity", 1.0);
-                d3.select(this).classed("selected_box_user", true);
-            })
-            .on("mouseout", function(d,i){
-                self.tooltip.style("opacity", 0.0);
-                d3.select(this).classed("selected_box_user", false);
+            rows = rows.sort(function (a, b) {
+                return sortAlphaNum(a[0].game.exp, b[0].game.exp)
             });
 
-        // AVERAGES OF DISPLAYED RECT
+            //        console.log(rows);
 
-        var rect_averages = {};
+            var my_data = [];
 
-        for(i=0; i< my_data.length; i++){
-            var d = my_data[i];
-            // NOT THE FIRST AVERAGE/STD DEV ROW
-            if(d.row!=0){
-                if(!(d.row in rect_averages)){ rect_averages[parseInt(d.row,10)] = [];}
+            var my_avgs_total = {};
+            var my_avgs_count = {};
 
-                rect_averages[parseInt(d.row,10)].push(d.round_data[self.data_field]);
+            var std_dev_column_series = {};
+
+            var max_column = 0;
+
+            for (var i in rows) {
+                for (var j in rows[i]) {
+                    var round_data = rows[i][j].round;
+                    var experiment = rows[i][j].game.exp;
+                    var user = rows[i][j].user;
+
+                    var column = parseInt(j, 10);
+
+                    if (column > max_column) {
+                        max_column = column;
+                    }
+
+                    my_data.push({'round_data': round_data, 'experiment': experiment, 'user': user, 'row': parseInt(i, 10) + 1, 'column': column});
+
+                    if (!(column in my_avgs_total)) {
+                        my_avgs_total[column] = 0.0;
+                    }
+                    if (!(column in my_avgs_count)) {
+                        my_avgs_count[column] = 0;
+                    }
+
+                    if (!(column in std_dev_column_series)) {
+                        std_dev_column_series[column] = [];
+                    }
+
+                    std_dev_column_series[column].push(round_data[self.data_field]);
+
+                    my_avgs_total[column] += round_data[self.data_field];
+                    my_avgs_count[column] += 1;
+                }
             }
-        }
 
-        console.log("RECT AVERAGES");
-        console.log(rect_averages);
+            console.log("AVGS");
+            console.log(my_avgs_count);
+            console.log(my_avgs_total);
 
-        var rect_averages_array = [];
+            var avg_data = [];
 
-        function average(data){
-          var sum = data.reduce(function(sum, value){
-            return sum + value;
-          }, 0);
+            console.log("STD_DEVS");
 
-          var avg = sum / data.length;
-          return avg;
-        }
+            console.log(std_dev_column_series);
 
-        $.each(Object.keys(rect_averages).sort(function(a,b){return parseInt(a,10)-parseInt(b,10);}), function(i,d) {
-            rect_averages_array.push(average(rect_averages[d]));
+            self.get_std_dev_from_series(std_dev_column_series);
 
-        });
+            console.log("STD_DEVS 2");
 
-        console.log("rect_averages_array");
-        console.log(rect_averages_array);
-
-        var join_avgs = self.svg.selectAll("rect.rect_avg").data(rect_averages_array);
+            console.log(std_dev_column_series);
 
 
-        join_avgs.enter().append("rect")
-            .classed("rect_avg", true)
-            .attr("x", function(d,i){return self.right_time + (hor_scale(1)-hor_scale(0))*1.5;})
-            .attr("y", function(d,i){return ver_scale(i+2);})
-            .attr("width", function(){return hor_scale(1)-hor_scale(0);})
-            .attr("height", function(){return ver_scale(1)-ver_scale(0);})
-            .style("fill", function(d,i){ return self.color_scale(d);})
-            .on("mouseover", function(d,i){
-                self.tooltip.html(d);
-                self.tooltip.style("opacity", 1.0);
-                d3.select(this).classed("selected_box_user", true);
-            })
-            .on("mouseout", function(){
-                self.tooltip.style("opacity", 0.0);
-                d3.select(this).classed("selected_box_user", false);
+            for (var i = 0; i < max_column + 1; i++) {
+                var round_data = [];
+                for (var k = 0; k < self.data_field; k++) {
+                    round_data.push(0);
+                }
+
+                //            console.log(my_avgs_count[i]);
+                //            console.log(my_avgs_total[i]);
+
+                if (self.method == "average") {
+                    round_data.push(my_avgs_total[i] / my_avgs_count[i]);
+                    my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
+                    avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "Average"}, 'row': 0, 'column': i});
+                }
+                // Standard deviation
+                else {
+                    round_data.push(std_dev_column_series[i]);
+                    my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+                    avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+                }
+
+
+            }
+
+
+            console.log(my_data);
+
+            self.data_min = d3.min(my_data, function (d) {
+                return d.round_data[self.data_field]
+            });
+            self.data_max = d3.max(my_data, function (d) {
+                return d.round_data[self.data_field]
             });
 
-//        var texts = self.svg.selectAll("text").data(my_data, function(d){return d.row + "," + d.column;});
+            self.avg_min = d3.min(avg_data, function (d) {
+                return d.round_data[self.data_field]
+            });
+            self.avg_max = d3.max(avg_data, function (d) {
+                return d.round_data[self.data_field]
+            });
 
-//        var new_data = $.
-//
-//        var texts = self.svg.selectAll("text").data(my_data, function(d,i){console.log(d.i);});
+            console.log("MINIMO MAXIMO");
+            console.log(self.data_min);
+            console.log(self.data_max);
 
-        var texts = self.svg.selectAll(".row_headers").data(my_data, function(d){return d.row});
+            self.build_color_scale();
 
-        texts.enter().append("text")
-            .attr("x", function(d,i){return hor_scale(-1.25);})
-            .attr("y", function(d,i){return d.row==0? ver_scale(d.row+0.8): ver_scale(d.row+1+0.8);})
-            .attr("class", "row_headers")
-            .text(function(d, i) { return d.user.nam + " - " + d.experiment});
+            var hor_scale = d3.scale.linear().domain([0, (self.MAX_USER_SERIES_INDEX - self.MIN_USER_SERIES_INDEX) - 1]).range([self.left_time, self.right_time]);
+
+            // rows.length+1 b/c of average
+            // artificial +1 row, b/c == .length+2
+
+            var tile_height = (self.pseudo_height * (1 - self.TIME_SERIES_HEIGHT_FACTOR)) / (self.VERTICAL_TILES_PAGE);
+
+            var ver_scale = d3.scale.linear().domain([0, rows.length + 2]).range([0, tile_height * (rows.length + 2)]).clamp(true);
+
+            var join = self.svg.selectAll("rect.rect_matrix").data(my_data, function (d) {
+                return d.row + "," + d.column;
+            });
+
+            console.log("MY DATA MY DATA MY DATA");
+            console.log(my_data);
+
+            join.enter().append("rect")
+                .attr("x", function (d, i) {
+                    return hor_scale(d.column - 1.0)
+                })
+                .attr("y", function (d, i) {
+                    return d.row == 0 ? ver_scale(d.row) : ver_scale(d.row + 1);
+                })
+                .attr("width", function () {
+                    return hor_scale(1) - hor_scale(0);
+                })
+                .attr("height", function () {
+                    return ver_scale(1) - ver_scale(0);
+                })
+                .style("fill", function (d, i) {
+                    return self.get_color_from_data(d)
+                })
+                .attr("class", "rect_matrix")
+                .on("mouseover", function (d, i) {
+                    if (d.round_data[self.data_field] != 0 || d.row == 0) {
+                        self.tooltip.html("Value: " + d.round_data[self.data_field].toFixed(2));
+                        self.tooltip.style("opacity", 1.0);
+                    }
+                    else {
+                        self.tooltip.html("No value");
+                        self.tooltip.style("opacity", 1.0);
+                    }
+                    d3.select(this).classed("selected_box_user", true);
+                })
+                .on("mouseout", function (d, i) {
+                    self.tooltip.style("opacity", 0.0);
+                    d3.select(this).classed("selected_box_user", false);
+                });
+
+            // AVERAGES OF DISPLAYED RECT
+
+            var rect_averages = {};
+
+            for (i = 0; i < my_data.length; i++) {
+                var d = my_data[i];
+                // NOT THE FIRST AVERAGE/STD DEV ROW
+                if (d.row != 0) {
+                    if (!(d.row in rect_averages)) {
+                        rect_averages[parseInt(d.row, 10)] = [];
+                    }
+
+                    rect_averages[parseInt(d.row, 10)].push(d.round_data[self.data_field]);
+                }
+            }
+
+            console.log("RECT AVERAGES");
+            console.log(rect_averages);
+
+            var rect_averages_array = [];
+
+            function average(data) {
+                var sum = data.reduce(function (sum, value) {
+                    return sum + value;
+                }, 0);
+
+                var avg = sum / data.length;
+                return avg;
+            }
+
+            $.each(Object.keys(rect_averages).sort(function (a, b) {
+                return parseInt(a, 10) - parseInt(b, 10);
+            }), function (i, d) {
+                rect_averages_array.push(average(rect_averages[d]));
+
+            });
+
+            console.log("rect_averages_array");
+            console.log(rect_averages_array);
+
+            var join_avgs = self.svg.selectAll("rect.rect_avg").data(rect_averages_array);
 
 
-        // SCALES LEGEND
-
-        // USERS
-
-        self.svg.append("g")
-          .attr("class", "legendUsers")
-          .attr("transform", "translate(20,100)");
-
-        var legendUsers = d3.legend.color()
-          .shapeWidth(20)
-          .orient('vertical')
-          .scale(self.color_scale);
-
-        self.svg.select(".legendUsers")
-          .call(legendUsers);
-
-        // AVG - STDDEV
-
-        self.svg.append("g")
-          .attr("class", "legendAvg")
-          .attr("transform", "translate(20,25)");
-
-
-        var legendAvg = d3.legend.color()
-          .shapeWidth(20)
-          .orient('horizontal')
-          .scale(self.avg_color_scale);
-
-        self.svg.select(".legendAvg")
-          .call(legendAvg);
-
-        // SCALES TEXT
-
-        self.svg.append("g")
-            .attr("class", "titleUsers")
-            .attr("transform", "translate(20,90)")
-            .append("text").text(function(){return "Users scale"});
-
-        // AVG - STDEV
-
-        self.svg.append("g")
-            .attr("class", "titleAvg")
-            .attr("transform", "translate(20,12)")
-            .append("text").text(function(){return self.method === "average" ? "Average scale": "StdDev scale"});
+            join_avgs.enter().append("rect")
+                .classed("rect_avg", true)
+                .attr("x", function (d, i) {
+                    return self.right_time + (hor_scale(1) - hor_scale(0)) * 1.5;
+                })
+                .attr("y", function (d, i) {
+                    return ver_scale(i + 2);
+                })
+                .attr("width", function () {
+                    return hor_scale(1) - hor_scale(0);
+                })
+                .attr("height", function () {
+                    return ver_scale(1) - ver_scale(0);
+                })
+                .style("fill", function (d, i) {
+                    return self.color_scale(d);
+                })
+                .on("mouseover", function (d, i) {
+                    self.tooltip.html("Row average </br>" + d);
+                    self.tooltip.style("opacity", 1.0);
+                    d3.select(this).classed("selected_box_user", true);
+                })
+                .on("mouseout", function () {
+                    self.tooltip.style("opacity", 0.0);
+                    d3.select(this).classed("selected_box_user", false);
+                });
 
 
-        // fill info box
+            // ROW AVERAGES TEXT
 
-        self.fill_info_box(data_name);
+            self.svg.append("g")
+                .attr("class", "titleRowAvg")
+                .attr("transform", "translate(" + (self.right_time + (hor_scale(1) - hor_scale(0)) * 2.0) + "," + ver_scale(1) + ")")
+                .append("text").text(function () {
+                    return "Row avg"
+                });
 
-        self.warningMessage.transition().duration(self.trans_time).style("opacity",0.0).remove();
+
+            //        var texts = self.svg.selectAll("text").data(my_data, function(d){return d.row + "," + d.column;});
+
+            //        var new_data = $.
+            //
+            //        var texts = self.svg.selectAll("text").data(my_data, function(d,i){console.log(d.i);});
+
+            var texts = self.svg.selectAll(".row_headers").data(my_data, function (d) {
+                return d.row
+            });
+
+            texts.enter().append("text")
+                .attr("x", function (d, i) {
+                    return hor_scale(-1.25);
+                })
+                .attr("y", function (d, i) {
+                    return d.row == 0 ? ver_scale(d.row + 0.8) : ver_scale(d.row + 1 + 0.8);
+                })
+                .attr("class", "row_headers")
+                .text(function (d, i) {
+                    return d.user.nam + " - " + d.experiment
+                });
+
+
+            // SCALES LEGEND
+
+            // USERS
+
+            self.svg.append("g")
+                .attr("class", "legendUsers")
+                .attr("transform", "translate(20,100)");
+
+            var legendUsers = d3.legend.color()
+                .shapeWidth(20)
+                .orient('vertical')
+                .scale(self.color_scale);
+
+            self.svg.select(".legendUsers")
+                .call(legendUsers);
+
+            // AVG - STDDEV
+
+            self.svg.append("g")
+                .attr("class", "legendAvg")
+                .attr("transform", "translate(20,25)");
+
+
+            var legendAvg = d3.legend.color()
+                .shapeWidth(20)
+                .orient('horizontal')
+                .scale(self.avg_color_scale);
+
+            self.svg.select(".legendAvg")
+                .call(legendAvg);
+
+            // SCALES TEXT
+
+            self.svg.append("g")
+                .attr("class", "titleUsers")
+                .attr("transform", "translate(20,90)")
+                .append("text").text(function () {
+                    return "Users scale"
+                });
+
+            // AVG - STDEV
+
+            self.svg.append("g")
+                .attr("class", "titleAvg")
+                .attr("transform", "translate(20,12)")
+                .append("text").text(function () {
+                    return self.method === "average" ? "Average scale" : "StdDev scale"
+                });
+
+
+            // fill info box
+
+            self.fill_info_box(data_name);
+
+            self.warningMessage.transition().duration(self.trans_time).style("opacity", 0.0).remove();
+        }
+        else{
+            self.warningMessage.text("No data available");
+        }
     };
 
     // Object's 'main'

@@ -108,7 +108,6 @@ ccviz.controller.series_users = function(options)
 
                 // Populate series filter
 
-
                 var series = $("#series_dropdown");
 
                 $.each(my_data.series, function (key,value){
@@ -168,6 +167,7 @@ ccviz.controller.series_users = function(options)
                                                  'age_range': 'agr',
                                                  'gender': 'gen'};
 
+
                 self.fill_combo_fields_user(user_combo_fields, reverse_user_combo_fields, my_data);
 
                 var game_combo_fields = {'experiment':{}};
@@ -179,6 +179,11 @@ ccviz.controller.series_users = function(options)
                 self.fill_combo_fields_game(game_combo_fields, reverse_game_combo_fields, my_data);
 
 
+                console.log("COMBO FIELDS CONTENTS");
+                console.log(user_combo_fields);
+
+
+
                 $.each(user_combo_fields, function(key,value){
                     d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
                     d3.select("#series_select").append("select").attr("id",direct_user_combo_fields[key]).attr("type","user").attr("class","filters");
@@ -187,8 +192,8 @@ ccviz.controller.series_users = function(options)
 
                     $("#"+id).append($("<option />").val("all").text("All"));
 
-                    $.each(value, function(key, value){
-                        $("#"+id).append($("<option />").val(key).text(key));
+                    $.each(Object.keys(value).sort(), function(i,d){
+                        $("#"+id).append($("<option />").val(d).text(human_translations[key][d]));
                     });
                 });
 
@@ -214,6 +219,7 @@ ccviz.controller.series_users = function(options)
                 {
                     var key = $(this).val();
                     console.log("COMBO CHANGED");
+                    console.log(key);
 
                     $("#time_series").remove();
                     $("#users_series").remove();
