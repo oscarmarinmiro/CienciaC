@@ -65,11 +65,59 @@ ccviz.controller.series_users = function(options)
 
     };
 
+    self.get_url_params = function(){
+
+        self.url = Qurl.create();
+
+        self.url_params = self.url.query();
+
+    };
+
+    self.set_url_param = function(param, value){
+        self.url.query(param, value);
+    };
+
+    self.set_url_params = function(conditions, variable, variable_name, method){
+
+        // First, delete all posible params in url
+
+        $.each(self.url.query(), function(key,value){
+            self.delete_url_param(key);
+        });
+
+        if('game' in conditions){
+            $.each(['ser','exp'], function(i,d){
+                if(d in conditions['game']){
+                    self.set_url_param("game."+d, conditions['game'][d]);
+                }
+            });
+        }
+
+        if('user' in conditions){
+            $.each(['agr','ed', 'gen'], function(i,d){
+                if(d in conditions['user']){
+                    self.set_url_param("user."+d, conditions['user'][d]);
+                }
+            });
+        }
+
+        self.set_url_param("var", variable);
+        self.set_url_param("met", method);
+    };
+
+
+    self.delete_url_param = function(param){
+        self.url.query(param, false);
+    };
 
     // Document ready...
 
     $(document).ready(function()
     {
+
+        // Get url params
+
+        self.get_url_params();
 
         var series_select_text = '<div class="left">Series</div><select class="left" id="series_dropdown"></select>' +
             '<div class="left">Variable</div><select class="left" id="variable_dropdown"></select>' +
@@ -111,8 +159,13 @@ ccviz.controller.series_users = function(options)
                 var series = $("#series_dropdown");
 
                 $.each(my_data.series, function (key,value){
-                    //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
-                    series.append($("<option />").val(key).text("Serie "+key));
+                    if('game.ser' in self.url_params && self.url_params['game.ser'] == key){
+                        series.append($("<option />").val(key).text("Serie " + key).attr("selected", true));
+                    }
+                    else {
+                        //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
+                        series.append($("<option />").val(key).text("Serie " + key));
+                    }
                 });
 
                 // Populate variable filter
@@ -122,8 +175,14 @@ ccviz.controller.series_users = function(options)
                 var variables = $("#variable_dropdown");
 
                 $.each(variables_dict, function (i,value){
-                    //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
-                    variables.append($("<option />").val(value[0]).text(value[1]));
+                    if('var' in self.url_params && parseInt(self.url_params['var'],10) === value[0]) {
+                        variables.append($("<option />").val(value[0]).text(value[1]).attr("selected", true));
+                    }
+                    else {
+                        //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
+                        variables.append($("<option />").val(value[0]).text(value[1]));
+                    }
+
                 });
 
                 variables.change(function(){
@@ -143,7 +202,13 @@ ccviz.controller.series_users = function(options)
                 var method = $("#method_dropdown");
 
                 $.each(method_dict, function (key, value){
-                    method.append($("<option/>").val(key).text(value));
+                    if('met' in self.url_params && self.url_params['met'] === value) {
+                        method.append($("<option/>").val(key).text(value).attr("selected", true));
+                        self.method = method_dict[key];
+
+                    }else {
+                        method.append($("<option/>").val(key).text(value));
+                    }
                 });
 
                 method.change(function(){
@@ -193,7 +258,11 @@ ccviz.controller.series_users = function(options)
                     $("#"+id).append($("<option />").val("all").text("All"));
 
                     $.each(Object.keys(value).sort(), function(i,d){
-                        $("#"+id).append($("<option />").val(d).text(human_translations[key][d]));
+                        if ('user.' + id in self.url_params && self.url_params['user.' + id] === d){
+                            $("#" + id).append($("<option />").val(d).text(human_translations[key][d]).attr("selected", true));
+                        }else {
+                            $("#" + id).append($("<option />").val(d).text(human_translations[key][d]));
+                        }
                     });
                 });
 
@@ -206,7 +275,11 @@ ccviz.controller.series_users = function(options)
                     $("#"+id).append($("<option />").val("all").text("All"));
 
                     $.each(value, function(key, value){
-                        $("#"+id).append($("<option />").val(key).text(key));
+                        if ('game.' + id in self.url_params && self.url_params['game.' + id] === key) {
+                            $("#" + id).append($("<option />").val(key).text(key).attr("selected", true));
+                        }else{
+                            $("#" + id).append($("<option />").val(key).text(key));
+                        }
                     });
 
                 });
@@ -246,6 +319,13 @@ ccviz.controller.series_users = function(options)
 
                     console.log("MANDANDO CONDICIONES!");
                     console.log(self.get_conditions(key));
+                    console.log(self.variable);
+                    console.log(self.variable_name);
+                    console.log(self.method);
+                    console.log("MANDANDO CONDICIONES!");
+
+                    self.set_url_params(self.get_conditions(key), self.variable, self.variable_name, self.method);
+
                     self.series_chart.render(self.get_conditions(key), self.variable, self.variable_name, self.method);
 
                 });

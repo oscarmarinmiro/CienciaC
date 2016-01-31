@@ -9,7 +9,8 @@
       "d3": "latest",
       "moment": "latest",
       "metrics-graphics": "latest",
-      "d3-legend": "latest"
+      "d3-legend": "latest",
+      "qurl": "latest"
 
   },
   "description": "viz lib",

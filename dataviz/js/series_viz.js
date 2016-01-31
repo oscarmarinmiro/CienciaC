@@ -50,12 +50,13 @@ ccviz.viz.series_users = function(options)
         console.log("Initializing series_users... en ");
         console.log(self.parent_select);
 
-        self.svg = d3.select(self.parent_select).append("svg")
+        self.svg_parent = d3.select(self.parent_select).append("svg")
             .attr("width",self.width)
-            .attr("height",100000)
-            .append("g").on("mousemove", _mousemove);
+            .attr("height",100000);
 
-        $("#users_series").css("height", self.pseudo_height);
+        self.svg = self.svg_parent.append("g").on("mousemove", _mousemove);
+
+        $("#users_series").css("height", self.pseudo_height *(1-self.TIME_SERIES_HEIGHT_FACTOR));
 
         console.log("Initializing series_time... en ");
         console.log(self.time_parent_select);
@@ -624,6 +625,10 @@ ccviz.viz.series_users = function(options)
 
             console.log("MY DATA MY DATA MY DATA");
             console.log(my_data);
+
+            // Adjust svg height to avoid infity scrolling
+
+            self.svg_parent.attr("height", tile_height* (rows.length+2)+5);
 
             join.enter().append("rect")
                 .attr("x", function (d, i) {
