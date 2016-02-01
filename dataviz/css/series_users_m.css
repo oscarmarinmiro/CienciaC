@@ -193,3 +193,8 @@ select{
     font-family: "Helvetica Neue";
     font-size: 20px;
 }
+
+.avg_text{
+    font-size:10px;
+    text-anchor:middle;
+}

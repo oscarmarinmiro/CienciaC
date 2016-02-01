@@ -620,6 +620,68 @@ ccviz.viz.series_users = function(options)
                     d3.select(this).classed("selected_box_user", false);
                 });
 
+            // AVERAGE RECT
+
+            function average(data) {
+                var sum = data.reduce(function (sum, value) {
+                    return sum + value;
+                }, 0);
+
+                var avg = sum / data.length;
+                return avg;
+            }
+
+            var to_average = [];
+
+            $.each(my_data, function(i,d){
+                to_average.push(d.round_data[self.data_field]);
+
+            });
+
+            var average_value = average(to_average);
+
+            console.log("MEDIA RECT");
+            console.log(average_value);
+
+            self.time_svg.append("text")
+                .attr("class","avg_text")
+                .attr("x", function (d, i) {
+                    return hor_scale.range()[1] + 20 + (hor_scale(1) - hor_scale(0))/2;
+                })
+                .attr("y", function (d, i) {
+                    return self.height*(self.TIME_SERIES_HEIGHT_FACTOR) - 10;
+                }).text("AVG");
+
+
+            self.svg.append("rect")
+                .attr("x", function (d, i) {
+                    return hor_scale.range()[1] + 20;
+                })
+                .attr("y", function (d, i) {
+                    return ver_scale(0)
+                })
+                .attr("width", function () {
+                    return hor_scale(1) - hor_scale(0);
+                })
+                .attr("height", function () {
+                    return ver_scale(1) - ver_scale(0);
+                })
+                .style("fill", function (d, i) {
+                    return self.color_scale(average_value);
+                })
+                .attr("class", "rect_matrix")
+                .on("mouseover", function (d, i) {
+                    self.tooltip.html("Value: " + average_value.toFixed(2));
+                    self.tooltip.style("opacity", 1.0);
+                    d3.select(this).classed("selected_box_user", true);
+                })
+                .on("mouseout", function (d, i) {
+                    self.tooltip.style("opacity", 0.0);
+                    d3.select(this).classed("selected_box_user", false);
+                });
+
+
+
             //        var texts = self.svg.selectAll("text").data(my_data, function(d){return d.row + "," + d.column;});
 
             //        var new_data = $.
