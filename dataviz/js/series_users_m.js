@@ -68,11 +68,59 @@ ccviz.controller.series_users = function(options)
 
     };
 
+    self.get_url_params = function(){
+
+        self.url = Qurl.create();
+
+        self.url_params = self.url.query();
+
+    };
+
+    self.set_url_param = function(param, value){
+        self.url.query(param, value);
+    };
+
+    self.set_url_params = function(conditions, variable, variable_name, method){
+
+        // First, delete all posible params in url
+
+        $.each(self.url.query(), function(key,value){
+            self.delete_url_param(key);
+        });
+
+        if('game' in conditions){
+            $.each(['exp'], function(i,d){
+                if(d in conditions['game']){
+                    self.set_url_param("game."+d, conditions['game'][d]);
+                }
+            });
+        }
+
+        if('user' in conditions){
+            $.each(['agr','ed', 'gen'], function(i,d){
+                if(d in conditions['user']){
+                    self.set_url_param("user."+d, conditions['user'][d]);
+                }
+            });
+        }
+
+        self.set_url_param("var", variable);
+        self.set_url_param("met", method);
+    };
+
+
+    self.delete_url_param = function(param){
+        self.url.query(param, false);
+    };
+
 
     // Document ready...
 
     $(document).ready(function()
     {
+        // Get url params
+
+        self.get_url_params();
 
         var series_select_text = '<div class="left">Select variable</div><select class="left" id="variable_dropdown"></select>';
 
@@ -130,17 +178,24 @@ ccviz.controller.series_users = function(options)
 
                 // Populate variable filter
 
-                var variables_dict = {1: 'elapsed time', 2: 'decision', 3: 'error'};
+                var variables_dict = [[2, 'decision'], [1,'elapsed time'], [3,'error']];
 
                 var variables = $("#variable_dropdown");
 
-                $.each(variables_dict, function (key,value){
-                    //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
-                    variables.append($("<option />").val(key).text(value));
+                $.each(variables_dict, function (i,value){
+                    if('var' in self.url_params && parseInt(self.url_params['var'],10) === value[0]) {
+                        variables.append($("<option />").val(value[0]).text(value[1]).attr("selected", true));
+                    }
+                    else {
+                        //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
+                        variables.append($("<option />").val(value[0]).text(value[1]));
+                    }
+
                 });
 
                 variables.change(function(){
                     self.variable = $(this).val();
+                    self.variable_name = $(this).children("option").filter(":selected").text();
                     self.render_s();
                 });
 
@@ -148,20 +203,27 @@ ccviz.controller.series_users = function(options)
 
                 var method_dict = {1: 'average', 2: 'standard deviation'};
 
-                var methods = $("#method_dropdown");
+                // Hardcode initial method
 
-                $.each(method_dict, function (key,value){
-                    methods.append($("<option />").val(key).text(value));
+                self.method = method_dict['1'];
+
+                var method = $("#method_dropdown");
+
+                $.each(method_dict, function (key, value){
+                    if('met' in self.url_params && self.url_params['met'] === value) {
+                        method.append($("<option/>").val(key).text(value).attr("selected", true));
+                        self.method = method_dict[key];
+
+                    }else {
+                        method.append($("<option/>").val(key).text(value));
+                    }
                 });
 
-                methods.change(function(){
+                method.change(function(){
                     self.method = method_dict[$(this).val()];
                     self.render_s();
                 });
 
-                // Hardcode initial method
-
-                self.method = method_dict['1'];
 
                 // Populate user field filter
 
@@ -178,10 +240,8 @@ ccviz.controller.series_users = function(options)
                                                  'age_range': 'agr',
                                                  'gender': 'gen'};
 
-                self.fill_combo_fields_user(user_combo_fields, reverse_user_combo_fields, my_data);
 
-                console.log("USER COMBO");
-                console.log(user_combo_fields);
+                self.fill_combo_fields_user(user_combo_fields, reverse_user_combo_fields, my_data);
 
                 var game_combo_fields = {'experiment':{}};
 
@@ -191,29 +251,43 @@ ccviz.controller.series_users = function(options)
 
                 self.fill_combo_fields_game(game_combo_fields, reverse_game_combo_fields, my_data);
 
+
+                console.log("COMBO FIELDS CONTENTS");
+                console.log(user_combo_fields);
+
+
+
                 $.each(user_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").attr("class","left").html(" " + key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1)+"  ");
-                    d3.select("#series_select").append("select").attr("class","left filters").attr("id", direct_user_combo_fields[key]).attr("type","user");
+                    d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
+                    d3.select("#series_select").append("select").attr("id",direct_user_combo_fields[key]).attr("type","user").attr("class","filters");
 
                     var id = direct_user_combo_fields[key];
 
                     $("#"+id).append($("<option />").val("all").text("All"));
 
-                    $.each(value, function(key, value){
-                        $("#"+id).append($("<option />").val(key).text(key));
+                    $.each(Object.keys(value).sort(), function(i,d){
+                        if ('user.' + id in self.url_params && self.url_params['user.' + id] === d){
+                            $("#" + id).append($("<option />").val(d).text(human_translations[key][d]).attr("selected", true));
+                        }else {
+                            $("#" + id).append($("<option />").val(d).text(human_translations[key][d]));
+                        }
                     });
                 });
 
                 $.each(game_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").attr("class","left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
-                    d3.select("#series_select").append("select").attr("class", "left filters").attr("id",direct_game_combo_fields[key]).attr("type","game");
+                    d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
+                    d3.select("#series_select").append("select").attr("id",direct_game_combo_fields[key]).attr("type","game").attr("class","filters");
 
                     var id = direct_game_combo_fields[key];
 
                     $("#"+id).append($("<option />").val("all").text("All"));
 
                     $.each(value, function(key, value){
-                        $("#"+id).append($("<option />").val(key).text(key));
+                        if ('game.' + id in self.url_params && self.url_params['game.' + id] === key) {
+                            $("#" + id).append($("<option />").val(key).text(key).attr("selected", true));
+                        }else{
+                            $("#" + id).append($("<option />").val(key).text(key));
+                        }
                     });
 
                 });
@@ -223,6 +297,9 @@ ccviz.controller.series_users = function(options)
                 });
 
                 self.render_s = function() {
+
+                    self.set_url_params(self.get_conditions(key), self.variable, self.variable_name, self.method);
+
 
                     for (var i = series_min; i < series_max + 1; i++) {
                         $("#viz_" + i).remove();
