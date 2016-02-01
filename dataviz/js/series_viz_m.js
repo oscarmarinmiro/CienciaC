@@ -266,6 +266,32 @@ ccviz.viz.series_users = function(options)
             .attr("class","time_title")
             .text(title_text);
 
+        // Series info button
+
+        self.time_svg.append("image")
+            .attr("class", "series_help")
+            .attr("x", self.width - self.RIGHT_MARGIN - 5)
+            .attr("y", self.TITLE_OFFSET*0.6 - 10)
+            .attr("width", "10px")
+            .attr("height", "10px")
+            .attr("xlink:href", "img/question_mark.png")
+            .on("mouseover", function(){
+                console.log("SERIES HELP CLICKED");
+                if (self.series_number in series_info) {
+                    var my_text = series_info[self.series_number];
+                }
+                else{
+                    var my_text = series_info['default'];
+                }
+                self.tooltip.html(my_text);
+                self.tooltip.style("opacity", 1.0);
+
+            })
+            .on("mouseout", function(){
+                self.tooltip.style("opacity", 0.0);
+            });
+
+
         var x_scale = d3.scale.linear().domain([0,data.length-1]).range([self.LEFT_MARGIN,self.width-self.RIGHT_MARGIN]).clamp(true);
         var y_scale = d3.scale.linear().domain([d3.min(data, function(d,i){return d.price}),d3.max(data, function(d,i){return d.price})])
             .range([(self.height*self.TIME_SERIES_HEIGHT_FACTOR)-self.TITLE_OFFSET - self.ARROW_OFFSET,self.TITLE_OFFSET]).clamp(true);
