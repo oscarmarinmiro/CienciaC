@@ -71,9 +71,9 @@ ccviz.viz.series_users = function(options)
 
         self.warningMessage = self.svg.append("text")
             .attr("text-anchor", "middle")
-            .attr("class","chordChartTextWarning")
+            .attr("class","textWarning")
             .attr("x", self.width/2)
-            .attr("y", self.height/2)
+            .attr("y", (self.height*(1-self.TIME_SERIES_HEIGHT_FACTOR)/2))
             .text(self.loading_message);
 
         self.prepare_series_data();
@@ -450,164 +450,196 @@ ccviz.viz.series_users = function(options)
 
         var rows = self.prepare_users_data(conditions);
 
-//        console.log("USER SERIES");
-//
-//        console.log(rows);
+        if(rows.length > 0) {
 
-        var reA = /[^a-zA-Z]/g;
-        var reN = /[^0-9]/g;
-        function sortAlphaNum(a,b) {
-            var aA = a.replace(reA, "");
-            var bA = b.replace(reA, "");
-            if(aA === bA) {
-                var aN = parseInt(a.replace(reN, ""), 10);
-                var bN = parseInt(b.replace(reN, ""), 10);
-                return aN === bN ? 0 : aN > bN ? 1 : -1;
-            } else {
-                return aA > bA ? 1 : -1;
-            }
-}
-        rows = rows.sort(function(a,b){ return sortAlphaNum(a[0].game.exp,b[0].game.exp)});
 
-//        console.log(rows);
+            //        console.log("USER SERIES");
+            //
+            //        console.log(rows);
 
-        var my_data = [];
+            var reA = /[^a-zA-Z]/g;
+            var reN = /[^0-9]/g;
 
-        var my_avgs_total = {};
-        var my_avgs_count = {};
-
-        var std_dev_column_series = {};
-
-        var max_column = 0;
-
-        for(var i in rows){
-            for(var j in rows[i]){
-                var round_data = rows[i][j].round;
-                var experiment = rows[i][j].game.exp;
-                var user = rows[i][j].user;
-
-                var column = parseInt(j,10);
-
-                if(column > max_column){
-                    max_column = column;
+            function sortAlphaNum(a, b) {
+                var aA = a.replace(reA, "");
+                var bA = b.replace(reA, "");
+                if (aA === bA) {
+                    var aN = parseInt(a.replace(reN, ""), 10);
+                    var bN = parseInt(b.replace(reN, ""), 10);
+                    return aN === bN ? 0 : aN > bN ? 1 : -1;
+                } else {
+                    return aA > bA ? 1 : -1;
                 }
-
-//                my_data.push({'round_data': round_data, 'experiment': experiment, 'user': user, 'row': parseInt(i,10)+1, 'column': column});
-
-                if(!(column in my_avgs_total)){
-                    my_avgs_total[column] = 0.0;
-                }
-                if(!(column in my_avgs_count)){
-                    my_avgs_count[column] = 0;
-                }
-
-                if(!(column in std_dev_column_series)){
-                    std_dev_column_series[column] = [];
-                }
-
-                std_dev_column_series[column].push(round_data[self.data_field]);
-
-                my_avgs_total[column]+= round_data[self.data_field];
-                my_avgs_count[column]+=1;
-            }
-        }
-
-//        console.log("AVGS");
-//        console.log(my_avgs_count);
-//        console.log(my_avgs_total);
-
-        var avg_data = [];
-
-//        console.log("STD_DEVS");
-//
-//        console.log(std_dev_column_series);
-
-        self.get_std_dev_from_series(std_dev_column_series);
-
-//        console.log("STD_DEVS 2");
-//
-//        console.log(std_dev_column_series);
-
-
-        for(var i=0; i<max_column+1; i++)
-        {
-            var round_data = [];
-            for(var k=0; k< self.data_field; k++) { round_data.push(0);}
-
-//            console.log(my_avgs_count[i]);
-//            console.log(my_avgs_total[i]);
-
-            if(self.method == "average") {
-                round_data.push(my_avgs_total[i] / my_avgs_count[i]);
-                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
-                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
-            }
-            else
-            {
-                round_data.push(std_dev_column_series[i]);
-                my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
-                avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
-
             }
 
-        }
-
-
-//        console.log(my_data);
-
-        self.data_min = d3.min(my_data, function(d){return d.round_data[self.data_field]});
-        self.data_max = d3.max(my_data, function(d){return d.round_data[self.data_field]});
-
-        self.avg_min = d3.min(avg_data, function(d){return d.round_data[self.data_field]});
-        self.avg_max = d3.max(avg_data, function(d){return d.round_data[self.data_field]});
-
-//        console.log("MINIMO MAXIMO");
-//        console.log(self.data_min);
-//        console.log(self.data_max);
-
-        self.build_color_scale();
-
-        var hor_scale = d3.scale.linear().domain([0,(self.MAX_USER_SERIES_INDEX-self.MIN_USER_SERIES_INDEX)-1]).range([self.left_time,self.right_time-1]);
-
-        // rows.length+1 b/c of average
-        var ver_scale = d3.scale.linear().domain([0,1]).range([0,self.height*(1-self.TIME_SERIES_HEIGHT_FACTOR-0.05)]).clamp(true);
-
-        var join = self.svg.selectAll("rect").data(my_data, function(d){return d.row + "," + d.column;});
-
-//        console.log(my_data);
-
-        join.enter().append("rect")
-            .attr("x", function(d,i){return hor_scale(d.column-1.0)})
-            .attr("y", function(d,i){return ver_scale(d.row)})
-            .attr("width", function(){return hor_scale(1)-hor_scale(0);})
-            .attr("height", function(){return ver_scale(1)-ver_scale(0);})
-            .style("fill", function(d,i){ return self.get_color_from_data(d)})
-            .attr("class", "rect_matrix")
-            .on("mouseover", function(d,i){
-                self.tooltip.html("Value: " + d.round_data[self.data_field].toFixed(2)); self.tooltip.style("opacity", 1.0);
-                d3.select(this).classed("selected_box_user", true);
-            })
-            .on("mouseout", function(d,i){
-                self.tooltip.style("opacity", 0.0);
-                d3.select(this).classed("selected_box_user", false);
+            rows = rows.sort(function (a, b) {
+                return sortAlphaNum(a[0].game.exp, b[0].game.exp)
             });
 
-//        var texts = self.svg.selectAll("text").data(my_data, function(d){return d.row + "," + d.column;});
+            //        console.log(rows);
 
-//        var new_data = $.
-//
-//        var texts = self.svg.selectAll("text").data(my_data, function(d,i){console.log(d.i);});
+            var my_data = [];
 
-//        var texts = self.svg.selectAll(".row_headers").data(my_data, function(d){return d.row});
-//
-//        texts.enter().append("text")
-//            .attr("x", function(d,i){return hor_scale(-0.75);})
-//            .attr("y", function(d,i){return ver_scale(d.row+0.8)})
-//            .attr("class", "row_headers")
-//            .text(function(d, i) { return d.user.nickname + " - " + d.experiment});
+            var my_avgs_total = {};
+            var my_avgs_count = {};
+
+            var std_dev_column_series = {};
+
+            var max_column = 0;
+
+            for (var i in rows) {
+                for (var j in rows[i]) {
+                    var round_data = rows[i][j].round;
+                    var experiment = rows[i][j].game.exp;
+                    var user = rows[i][j].user;
+
+                    var column = parseInt(j, 10);
+
+                    if (column > max_column) {
+                        max_column = column;
+                    }
+
+                    //                my_data.push({'round_data': round_data, 'experiment': experiment, 'user': user, 'row': parseInt(i,10)+1, 'column': column});
+
+                    if (!(column in my_avgs_total)) {
+                        my_avgs_total[column] = 0.0;
+                    }
+                    if (!(column in my_avgs_count)) {
+                        my_avgs_count[column] = 0;
+                    }
+
+                    if (!(column in std_dev_column_series)) {
+                        std_dev_column_series[column] = [];
+                    }
+
+                    std_dev_column_series[column].push(round_data[self.data_field]);
+
+                    my_avgs_total[column] += round_data[self.data_field];
+                    my_avgs_count[column] += 1;
+                }
+            }
+
+            //        console.log("AVGS");
+            //        console.log(my_avgs_count);
+            //        console.log(my_avgs_total);
+
+            var avg_data = [];
+
+            //        console.log("STD_DEVS");
+            //
+            //        console.log(std_dev_column_series);
+
+            self.get_std_dev_from_series(std_dev_column_series);
+
+            //        console.log("STD_DEVS 2");
+            //
+            //        console.log(std_dev_column_series);
 
 
-        self.warningMessage.transition().duration(self.trans_time).style("opacity",0.0).remove();
+            for (var i = 0; i < max_column + 1; i++) {
+                var round_data = [];
+                for (var k = 0; k < self.data_field; k++) {
+                    round_data.push(0);
+                }
+
+                //            console.log(my_avgs_count[i]);
+                //            console.log(my_avgs_total[i]);
+
+                if (self.method == "average") {
+                    round_data.push(my_avgs_total[i] / my_avgs_count[i]);
+                    my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
+                    avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nickname': "Average"}, 'row': 0, 'column': i});
+                }
+                else {
+                    round_data.push(std_dev_column_series[i]);
+                    my_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+                    avg_data.push({'round_data': round_data, 'experiment': "ALL", 'user': {'nam': "StdDev"}, 'row': 0, 'column': i});
+
+                }
+
+            }
+
+
+            //        console.log(my_data);
+
+            self.data_min = d3.min(my_data, function (d) {
+                return d.round_data[self.data_field]
+            });
+            self.data_max = d3.max(my_data, function (d) {
+                return d.round_data[self.data_field]
+            });
+
+            self.avg_min = d3.min(avg_data, function (d) {
+                return d.round_data[self.data_field]
+            });
+            self.avg_max = d3.max(avg_data, function (d) {
+                return d.round_data[self.data_field]
+            });
+
+            //        console.log("MINIMO MAXIMO");
+            //        console.log(self.data_min);
+            //        console.log(self.data_max);
+
+            self.build_color_scale();
+
+            var hor_scale = d3.scale.linear().domain([0, (self.MAX_USER_SERIES_INDEX - self.MIN_USER_SERIES_INDEX) - 1]).range([self.left_time, self.right_time - 1]);
+
+            // rows.length+1 b/c of average
+            var ver_scale = d3.scale.linear().domain([0, 1]).range([0, self.height * (1 - self.TIME_SERIES_HEIGHT_FACTOR - 0.05)]).clamp(true);
+
+            var join = self.svg.selectAll("rect").data(my_data, function (d) {
+                return d.row + "," + d.column;
+            });
+
+            //        console.log(my_data);
+
+            join.enter().append("rect")
+                .attr("x", function (d, i) {
+                    return hor_scale(d.column - 1.0)
+                })
+                .attr("y", function (d, i) {
+                    return ver_scale(d.row)
+                })
+                .attr("width", function () {
+                    return hor_scale(1) - hor_scale(0);
+                })
+                .attr("height", function () {
+                    return ver_scale(1) - ver_scale(0);
+                })
+                .style("fill", function (d, i) {
+                    return self.get_color_from_data(d)
+                })
+                .attr("class", "rect_matrix")
+                .on("mouseover", function (d, i) {
+                    self.tooltip.html("Value: " + d.round_data[self.data_field].toFixed(2));
+                    self.tooltip.style("opacity", 1.0);
+                    d3.select(this).classed("selected_box_user", true);
+                })
+                .on("mouseout", function (d, i) {
+                    self.tooltip.style("opacity", 0.0);
+                    d3.select(this).classed("selected_box_user", false);
+                });
+
+            //        var texts = self.svg.selectAll("text").data(my_data, function(d){return d.row + "," + d.column;});
+
+            //        var new_data = $.
+            //
+            //        var texts = self.svg.selectAll("text").data(my_data, function(d,i){console.log(d.i);});
+
+            //        var texts = self.svg.selectAll(".row_headers").data(my_data, function(d){return d.row});
+            //
+            //        texts.enter().append("text")
+            //            .attr("x", function(d,i){return hor_scale(-0.75);})
+            //            .attr("y", function(d,i){return ver_scale(d.row+0.8)})
+            //            .attr("class", "row_headers")
+            //            .text(function(d, i) { return d.user.nickname + " - " + d.experiment});
+
+
+            self.warningMessage.transition().duration(self.trans_time).style("opacity", 0.0).remove();
+        }
+        else{
+            self.warningMessage.text("No data available");
+        }
     };
 
     // Object's 'main'
