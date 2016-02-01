@@ -4,6 +4,16 @@ body,html{
     margin:0;
 }
 
+#header{
+    position:fixed;
+    background-image: url('../img/arrow_down.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    height: 75px;
+    width:100%;
+}
+
 .left{
 
     float:left;
@@ -21,6 +31,7 @@ body,html{
 {
         background-color:#FFF;
         font-family: "Helvetica Neue", Helvetica, sans-serif;
+        padding-top: 120px;
 }
 
 .rect_matrix
@@ -78,6 +89,7 @@ body,html{
 {
     position: fixed;
     /*left: 30px;*/
+    top: 75px;
     /*top: 15px;*/
     /*width:105px;*/
     /*position:fixed;*/
