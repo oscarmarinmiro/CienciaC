@@ -52,6 +52,11 @@ body,html{
     font-family: "Helvetica Neue";
     font-size: 15px;
     text-anchor: middle;
+    cursor:pointer;
+}
+.time_title:hover
+{
+    text-decoration:underline;
 }
 
 .row_headers

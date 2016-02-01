@@ -251,6 +251,10 @@ ccviz.viz.series_users = function(options)
 
     };
 
+    self.jump_to_series_detail = function(series_number){
+        window.open("series_users.html?game.ser=" + series_number);
+    };
+
     self.render_series = function(data)
     {
 //        console.log("DATA PARA RENDER_SERIES");
@@ -264,7 +268,10 @@ ccviz.viz.series_users = function(options)
             .attr("x", (self.LEFT_MARGIN+(self.width-self.RIGHT_MARGIN))/2)
             .attr("y", self.TITLE_OFFSET*0.6)
             .attr("class","time_title")
-            .text(title_text);
+            .text(title_text)
+            .on("click", function(d,i){
+                self.jump_to_series_detail(self.series_number);
+            });
 
         // Series info button
 
