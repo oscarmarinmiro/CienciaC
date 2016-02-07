@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="utf-8">
+		<title>Series+Users Info</title>
+
+
+        <!-- Styles -->
+
+        <link href="css/series_a_user.css" rel="stylesheet" type="text/css" />
+
+        <!-- Scripts -->
+
+        <script src="bower_components/d3/d3.min.js" charset="utf-8"></script>
+        <script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+        <script src="bower_components/moment/min/moment.min.js" charset="utf-8"></script>
+        <script src="bower_components/qurl/qurl.js" charset="utf-8"></script>
+        <script src="js/series_a_user.js" charset="utf-8"></script>
+        <script src="js/series_viz_a_user.js" charset="utf-8"></script>
+        <script src="js/series_copies.js" charset="utf-8"></script>
+
+
+    </head>
+	<body>
+
+        <div id="header" class="header"></div>
+        <div id="series_parent" class="series">
+            <script>
+
+                var series_test = ccviz.controller.series_users(
+                        {
+                            'id_name':"series_parent",
+                            'className':"series",
+                            'base_data':"data/",
+                            'data_file': "mr_banks.final.json",
+                            'trans_time': 1000
+                        });
+            </script>
+
+        </div>
+
+	</body>
+</html>
+
+
