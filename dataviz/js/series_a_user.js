@@ -17,57 +17,6 @@ ccviz.controller.series_users = function(options)
     self.parent_select = "#"+self.id_name;
 
 
-    self.get_conditions = function(key){
-        var conditions = {'game':{'ser':parseInt(key,10)}};
-
-        // Get filter values
-
-        console.log("GETTING FILTERS");
-        $.each($(".filters"), function(i,d){
-            var id = $(d).attr("id");
-            var type = $(d).attr("type");
-            var value = $(d).val();
-
-            if(value!="all"){
-                if(!(type in conditions)){
-                    conditions[type] = {};
-                }
-                conditions[type][id] = value;
-            }
-
-        });
-
-        console.log("FINAL CONDITIONS");
-
-        return conditions;
-    };
-
-    self.fill_combo_fields_user = function(user_combo_fields, reverse_user_combo_fields, my_data){
-
-        $.each(my_data.users, function(i,d){
-            $.each(d, function (key,value){
-                if((key in reverse_user_combo_fields) && (!(value in user_combo_fields[reverse_user_combo_fields[key]]))){
-                    user_combo_fields[reverse_user_combo_fields[key]][value] = true;
-                }
-            });
-        });
-
-    };
-
-    self.fill_combo_fields_game = function(game_combo_fields, reverse_game_combo_fields,my_data){
-
-        $.each(my_data.users, function(i,d){
-            $.each(d.gam, function (i,d){
-                $.each(d, function (key,value) {
-                    if((key in reverse_game_combo_fields) && (!(value in game_combo_fields[reverse_game_combo_fields[key]]))){
-                        game_combo_fields[reverse_game_combo_fields[key]][value] = true;
-                    }
-                });
-            });
-        });
-
-    };
-
     self.get_url_params = function(){
 
         self.url = Qurl.create();
@@ -80,7 +29,7 @@ ccviz.controller.series_users = function(options)
         self.url.query(param, value);
     };
 
-    self.set_url_params = function(conditions, variable, variable_name, method){
+    self.set_url_params = function(user_id, method){
 
         // First, delete all posible params in url
 
@@ -88,23 +37,8 @@ ccviz.controller.series_users = function(options)
             self.delete_url_param(key);
         });
 
-        if('game' in conditions){
-            $.each(['exp'], function(i,d){
-                if(d in conditions['game']){
-                    self.set_url_param("game."+d, conditions['game'][d]);
-                }
-            });
-        }
 
-        if('user' in conditions){
-            $.each(['agr','ed', 'gen'], function(i,d){
-                if(d in conditions['user']){
-                    self.set_url_param("user."+d, conditions['user'][d]);
-                }
-            });
-        }
-
-        self.set_url_param("var", variable);
+        self.set_url_param("user_id", user_id);
         self.set_url_param("met", method);
     };
 
@@ -122,9 +56,9 @@ ccviz.controller.series_users = function(options)
 
         self.get_url_params();
 
-        var series_select_text = '<div class="left">Select variable</div><select class="left" id="variable_dropdown"></select>';
+        var series_select_text = '<div class="left">Select user</div><select class="left" id="users_dropdown"></select>';
 
-        series_select_text+= '<div class="left" >Select display method</div><select class="left" id="method_dropdown"></select>';
+//        series_select_text+= '<div class="left" >Select display method</div><select class="left" id="method_dropdown"></select>';
 
         var inject_string =
             [   '<div id="zona_opciones" class="zona_opciones"><div id="series_select">'+ series_select_text + '</div></div>',
@@ -144,7 +78,6 @@ ccviz.controller.series_users = function(options)
 
         };
 
-
         // Get data file and store properties in self
 
         d3.json(self.base_data+self.data_file, function(my_data)
@@ -154,50 +87,38 @@ ccviz.controller.series_users = function(options)
                 console.log("Recibido data en controller...");
                 console.log(my_data);
 
-                // serie, experiment
+                var user_list = my_data.users.map(function(d){return d.id});
 
-                // Populate series filter
+                // Choose a random user if not user by param...
 
+                if(user_list.indexOf(parseInt(self.url_params['user_id'],10))===-1){
+                    // Sets a random user and sets param + refresh gets params
 
-                var series_list = [];
+                    self.user_id = user_list[Math.floor((Math.random() * user_list.length))]
+                    self.set_url_param('user_id', self.user_id);
+                    self.get_url_params();
 
-                $.each(my_data.series, function (key,value){
-                    //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
-                    series_list.push(parseInt(key,10));
-                });
-
-                var series_min = d3.min(series_list);
-                var series_max = d3.max(series_list);
-
-                console.log("SERIES MIN");
-                console.log(series_min);
-
-                console.log("SERIES MAX");
-                console.log(series_max);
+                }
+                else{
+                    self.user_id = parseInt(self.url_params['user_id'],10);
+                }
 
 
-                // Populate variable filter
+                console.log("USER LIST");
+                console.log(user_list);
 
-                var variables_dict = [[2, 'decision'], [1,'elapsed time'], [3,'error']];
+                var users = $("#users_dropdown");
 
-                var variables = $("#variable_dropdown");
-
-                $.each(variables_dict, function (i,value){
-                    if('var' in self.url_params && parseInt(self.url_params['var'],10) === value[0]) {
-                        variables.append($("<option />").val(value[0]).text(value[1]).attr("selected", true));
+                $.each(my_data.users, function (i,d){
+                    if(self.user_id === d.id){
+                        users.append($("<option />").val(d.id).text(d.nam).attr("selected", true));
                     }
                     else {
                         //http://stackoverflow.com/questions/815103/jquery-best-practice-to-populate-drop-down
-                        variables.append($("<option />").val(value[0]).text(value[1]));
+                        users.append($("<option />").val(d.id).text(d.nam));
                     }
-
                 });
 
-                variables.change(function(){
-                    self.variable = $(this).val();
-                    self.variable_name = $(this).children("option").filter(":selected").text();
-                    self.render_s();
-                });
 
                 // Populate method filter
 
@@ -224,111 +145,78 @@ ccviz.controller.series_users = function(options)
                     self.render_s();
                 });
 
-
-                // Populate user field filter
-
-                var user_combo_fields = {'education_level':{},
-                                        'age_range':{},
-                                        'gender':{}
-                };
-
-                var reverse_user_combo_fields = {'ed': 'education_level',
-                                                 'agr': 'age_range',
-                                                 'gen': 'gender'};
-
-                var direct_user_combo_fields = {'education_level': 'ed' ,
-                                                 'age_range': 'agr',
-                                                 'gender': 'gen'};
-
-
-                self.fill_combo_fields_user(user_combo_fields, reverse_user_combo_fields, my_data);
-
-                var game_combo_fields = {'experiment':{}};
-
-                var reverse_game_combo_fields = {'exp': 'experiment'};
-
-                var direct_game_combo_fields = {'experiment': 'exp'};
-
-                self.fill_combo_fields_game(game_combo_fields, reverse_game_combo_fields, my_data);
-
-
-                console.log("COMBO FIELDS CONTENTS");
-                console.log(user_combo_fields);
-
-
-
-                $.each(user_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
-                    d3.select("#series_select").append("select").attr("id",direct_user_combo_fields[key]).attr("type","user").attr("class","filters");
-
-                    var id = direct_user_combo_fields[key];
-
-                    $("#"+id).append($("<option />").val("all").text("All"));
-
-                    $.each(Object.keys(value).sort(), function(i,d){
-                        if ('user.' + id in self.url_params && self.url_params['user.' + id] === d){
-                            $("#" + id).append($("<option />").val(d).text(human_translations[key][d]).attr("selected", true));
-                        }else {
-                            $("#" + id).append($("<option />").val(d).text(human_translations[key][d]));
-                        }
-                    });
-                });
-
-                $.each(game_combo_fields, function(key,value){
-                    d3.select("#series_select").append("div").attr("class", "left").html(key.charAt(0).toUpperCase() + key.replace("_", " ").slice(1));
-                    d3.select("#series_select").append("select").attr("id",direct_game_combo_fields[key]).attr("type","game").attr("class","filters");
-
-                    var id = direct_game_combo_fields[key];
-
-                    $("#"+id).append($("<option />").val("all").text("All"));
-
-                    $.each(value, function(key, value){
-                        if ('game.' + id in self.url_params && self.url_params['game.' + id] === key) {
-                            $("#" + id).append($("<option />").val(key).text(key).attr("selected", true));
-                        }else{
-                            $("#" + id).append($("<option />").val(key).text(key));
-                        }
-                    });
-
-                });
-
-                $(".filters").change(function(){
+                users.change(function(){
+                    self.user_id = parseInt($(this).val(),10);
                     self.render_s();
                 });
 
+                // 'render_s' is for 'render_series'
+
                 self.render_s = function() {
 
-                    self.set_url_params(self.get_conditions(key), self.variable, self.variable_name, self.method);
+                    self.set_url_params(self.user_id, self.method);
+
+                    // Find the user in all data...
+
+                    var my_user_data = null;
+                    var my_user_market_series = {};
+
+                    $.each(my_data.users, function (i, d) {
+                        if (d.id == self.user_id) {
+                            my_user_data = d;
+                        }
+                    });
+
+                    $.each(my_user_data.gam, function (i, d) {
+                        my_user_market_series[d.ser] = my_data.series[d.ser];
+                    });
+
+                    // Delete all divs before rendering anything
+
+                    $(".a_user_series").remove();
+
+                    // If there are games for this user
+
+                    if (my_user_data.gam.length != 0) {
+
+                        // First remove 'no data' warning
+
+                        d3.selectAll(".no_series_data").remove();
+
+                        $.each(my_user_data.gam, function (i, d) {
+
+                            d3.selectAll("#zona_viz").append("div").attr("id", "viz_" + i).classed("a_user_series", true).style("float", "left");
+                            d3.selectAll("#viz_" + i).append("div").attr("id", "time_series_" + i);
+                            d3.selectAll("#viz_" + i).append("div").attr("id", "users_series_" + i);
+
+                            self.series_chart = ccviz.viz.series_users(
+                                {
+                                    'id_time': "time_series_" + i,
+                                    'id_users': "users_series_" + i,
+                                    'width': 600,
+                                    'height': 300,
+                                    'trans_time': self.trans_time,
+                                    'loading_message': "Loading data...",
+                                    'up_color': "#4C4",
+                                    'down_color': "#C44",
+                                    'infos': self.infos,
+                                    'user_data': my_user_data,
+                                    'user_series_data': d,
+                                    'series_data': my_user_market_series[d.ser]
+                                });
+
+                            self.series_chart.render(self.method);
 
 
-                    for (var i = series_min; i < series_max + 1; i++) {
-                        $("#viz_" + i).remove();
-                        d3.selectAll("#zona_viz").append("div").attr("id", "viz_" + i).style("float", "left");
-                        d3.selectAll("#viz_" + i).append("div").attr("id", "time_series_" + i);
-                        d3.selectAll("#viz_" + i).append("div").attr("id", "users_series_" + i);
-
-                        self.series_chart = ccviz.viz.series_users(
-                            {
-                                'id_time': "time_series_" + i,
-                                'id_users': "users_series_" + i,
-                                'width': 300,
-                                'height': 200,
-                                'trans_time': self.trans_time,
-                                'loading_message': "Loading data...",
-                                'up_color': "#4C4",
-                                'down_color': "#C44",
-                                'infos': self.infos,
-                                'data': my_data
-                            });
-
-                        self.series_chart.render(self.get_conditions(i), self.variable, self.method);
+                        });
+                    }
+                    else {
+                        d3.selectAll("#zona_viz").append("div").classed("no_series_data", true).html("No data for selected user");
                     }
                 };
 
-                console.log("VARIABLES");
-                console.log(variables);
-
-                variables.trigger("change");
+                // Trigger a change for first render
+                users.trigger("change");
 
 
             }

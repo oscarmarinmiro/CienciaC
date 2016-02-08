@@ -420,8 +420,7 @@ ccviz.viz.series_users = function(options)
     };
 
 
-    self.render = function(conditions, data_field, method)
-    {
+    self.render = function(conditions, data_field, method) {
         self.series_number = conditions.game.ser;
 
         console.log("Rendering series number:");
@@ -450,7 +449,7 @@ ccviz.viz.series_users = function(options)
 
         var rows = self.prepare_users_data(conditions);
 
-        if(rows.length > 0) {
+        if (rows.length > 0) {
 
 
             //        console.log("USER SERIES");
@@ -633,7 +632,7 @@ ccviz.viz.series_users = function(options)
 
             var to_average = [];
 
-            $.each(my_data, function(i,d){
+            $.each(my_data, function (i, d) {
                 to_average.push(d.round_data[self.data_field]);
 
             });
@@ -644,12 +643,12 @@ ccviz.viz.series_users = function(options)
             console.log(average_value);
 
             self.time_svg.append("text")
-                .attr("class","avg_text")
+                .attr("class", "avg_text")
                 .attr("x", function (d, i) {
-                    return hor_scale.range()[1] + 20 + (hor_scale(1) - hor_scale(0))/2;
+                    return hor_scale.range()[1] + 20 + (hor_scale(1) - hor_scale(0)) / 2;
                 })
                 .attr("y", function (d, i) {
-                    return self.height*(self.TIME_SERIES_HEIGHT_FACTOR) - 10;
+                    return self.height * (self.TIME_SERIES_HEIGHT_FACTOR) - 10;
                 }).text("AVG");
 
 
@@ -681,7 +680,6 @@ ccviz.viz.series_users = function(options)
                 });
 
 
-
             //        var texts = self.svg.selectAll("text").data(my_data, function(d){return d.row + "," + d.column;});
 
             //        var new_data = $.
@@ -699,7 +697,7 @@ ccviz.viz.series_users = function(options)
 
             self.warningMessage.transition().duration(self.trans_time).style("opacity", 0.0).remove();
         }
-        else{
+        else {
             self.warningMessage.text("No data available");
         }
     };
