@@ -52,6 +52,11 @@ body,html{
     font-size: 12px;
 }
 
+.row_headers:hover{
+    text-decoration: underline;
+    cursor:pointer;
+}
+
 .tooltip
 {
     position: absolute;

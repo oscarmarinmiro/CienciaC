@@ -440,6 +440,10 @@ ccviz.viz.series_users = function(options)
 
     };
 
+    self.jump_to_user_detail = function(user_id){
+        window.open("series_a_user.html?user_id=" + user_id);
+    };
+
 
     self.render = function(conditions, data_field, data_name, method)
     {
@@ -765,6 +769,16 @@ ccviz.viz.series_users = function(options)
                 .text(function (d, i) {
                     return d.user.nam + " - " + d.experiment
                 });
+
+
+            d3.selectAll(".row_headers").on("click", function(d,i){
+
+                // Avoid average
+
+                if(d.row!=0) {
+                    self.jump_to_user_detail(d.user.id);
+                }
+            });
 
 
             // SCALES LEGEND
