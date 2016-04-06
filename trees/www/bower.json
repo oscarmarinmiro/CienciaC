@@ -5,7 +5,8 @@
   "dependencies": {
     "d3": "latest",
     "jquery": "latest",
-    "typeahead.js": "latest"
+    "typeahead.js": "latest",
+    "qurl": "latest"
   },
   "devDependencies": {}
 }

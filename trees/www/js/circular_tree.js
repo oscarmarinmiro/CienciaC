@@ -11,17 +11,12 @@ ccviz.viz.circularTree = function(options) {
         self[key] = options[key];
     }
 
-    console.log("OPTIONS");
-
     // Object to store deactivated sequences
 
     self.deactivated = {};
 
 
     self.init = function() {
-
-//        self.diameter = $(window).height() > $(window).width() ? $(window).width(): $(window).height();
-//        self.diameter = $(window).width();
 
         self.diameter = self.diameter - self.chart_margin;
 
@@ -34,13 +29,14 @@ ccviz.viz.circularTree = function(options) {
 
 
         self.tree = d3.layout.tree()
-            .size([360, self.diameter / 2 - 60])
+            // 360degrees + radius
+            .size([360, self.diameter / 2 - 40])
             .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
 
         self.diagonal = d3.svg.diagonal.radial()
             .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
 
-        self.svg = d3.select("#right_frame").append("svg")
+        self.svg = d3.select("#viz_frame").append("svg")
             .attr("width", self.diameter)
             .attr("height", self.diameter)
           .append("g")
@@ -52,84 +48,31 @@ ccviz.viz.circularTree = function(options) {
                 .html("")
                 .attr("class", "tooltip_viz")
                 .style("opacity", 0);
+    };
 
-        d3.select("#select_all").on("click", function(){
-            // Select all 'selects'
+    self.get_url_params = function(){
 
-            d3.selectAll(".node_row").each(function(d){
+        self.url = Qurl.create();
 
-                d3.select(this).select(".sequence_check").property("checked", true);
-
-//                self.activated_seq[d3.select(this).attr("sequence")] = true;
-
-            });
-
-            // Change the datastruct
-
-            // Select all is about removing everything in deactivated dictionary
-
-            self.deactivated = {};
-
-            self.unhide_all_sequences();
-
-
-//            // And deactivate in sorted order (from shorter to longest)
-//
-//            self.hide_all_sequences();
-//
-//            var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
-//
-//            console.log("DEACTIVATED");
-//            console.log(deactivated_keys);
-//
-//            $.each(deactivated_keys, function(i,d){
-//                self.deselect_a_sequence(d);
-//            });
-//
-//            var activated_keys = Object.keys(self.activated_seq).sort(function(a,b){return a.length- b.length;});
-//
-//            console.log("ACTIVATED");
-//            console.log(activated_keys);
-//
-//            $.each(activated_keys, function(i,d){
-//                self.select_a_sequence(d);
-//            });
-
-
-
-
-
-            return false;
-        });
-
-        d3.select("#deselect_all").on("click", function(){
-
-
-            self.deactivated = {};
-
-            // Unselect all 'selects'
-
-            d3.selectAll(".node_row").each(function(d){
-
-                d3.select(this).select(".sequence_check").property("checked", false);
-
-                self.deactivated[d3.select(this).attr("sequence")] = true;
-
-            });
-
-            self.unhide_all_sequences();
-
-            var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
-
-            $.each(deactivated_keys, function(i,d){
-                self.deselect_a_sequence(d);
-            });
-
-            return false;
-        });
-
+        self.url_params = self.url.query();
 
     };
+
+    self.set_url_param = function(param, value){
+        self.url.query(param, value);
+    };
+
+    self.set_url_params = function(conditions, variable, variable_name, method){
+
+//            self.delete_url_param(key);
+//                    self.set_url_param("game."+d, conditions['game'][d]);
+    };
+
+
+    self.delete_url_param = function(param){
+        self.url.query(param, false);
+    };
+
 
 
     self.get_sequence_from_node = function(d){
@@ -158,31 +101,89 @@ ccviz.viz.circularTree = function(options) {
         return my_html;
     };
 
-//    self.select_a_sequence = function(sequence){
+//    self.is_first_descendent_hidden = function(sequence){
 //
 //        d3.selectAll(".node").filter(function(d,i){
 //
-//            var candidate = self.get_sequence_from_node(d).indexOf(sequence)==0;
+//            var node_sequence = self.get_sequence_from_node(d);
 //
-//            var hidden_by = d3.select(this).attr("hidden_by");
+//            // Node goes through clicked node
 //
-//            if(hidden_by==null && candidate){
-//                return candidate;
-//            }
-//            else{
-//
-//                return (candidate && hidden_by.length==sequence.length) ? true: false;
-//            }
+//            return node_sequence === (sequence + "UP");
 //
 //        }).classed("selected_hidden", false);
 //
 //    };
 
-    self.deselect_a_sequence = function(sequence){
+    self.deselect_all_links_to_node = function(d){
+
+        d3.selectAll(".link").filter(function(link,i){
+            return link.target === d;
+        }).classed("hidden_link", true);
+    };
+
+    self.select_all_links_from_node_parent = function(d){
+
+        console.log("NODE");
+        console.log(d);
+
+        d3.selectAll(".link").filter(function(link,i){
+            return link.source === d.parent;
+        }).classed("hidden_link", false);
+
+    };
+
+    self.select_inmediate_descendents = function(sequence, levels){
 
         d3.selectAll(".node").filter(function(d,i){
 
-            return self.get_sequence_from_node(d).indexOf(sequence)==0;
+            var node_sequence = self.get_sequence_from_node(d);
+
+            // Node goes through clicked node
+
+            if((node_sequence == sequence + "/UP") || (node_sequence == sequence + "/DOWN")){
+
+                self.select_all_links_from_node_parent(d);
+
+                d3.select(this).select(".expansion").text("+");
+
+                return true;
+
+            }
+            else{
+                return false;
+            }
+
+        }).classed("selected_hidden", false).classed("clicked", false);
+
+    };
+
+
+    self.select_a_sequence = function(sequence, levels){
+
+        d3.selectAll(".node").filter(function(d,i){
+
+            return self.get_sequence_from_node(d) === sequence;
+
+        }).classed("selected_hidden", false);
+
+    };
+
+
+    self.deselect_a_sequence = function(sequence, level_up){
+
+        d3.selectAll(".node").filter(function(d,i){
+
+            // Only childs, i.e: not deselect same node
+
+            if((self.get_sequence_from_node(d).indexOf(sequence)==0) && (self.get_sequence_from_node(d)!= sequence)) {
+
+                self.deselect_all_links_to_node(d);
+                return true;
+            }
+            else{
+                return false;
+            }
 
         }).classed("selected_hidden", true);
 
@@ -190,8 +191,13 @@ ccviz.viz.circularTree = function(options) {
 
     self.unhide_all_sequences = function(){
 
-        d3.selectAll(".node").classed("selected_hidden", false)
+        d3.selectAll(".node").classed("selected_hidden", false);
 
+    };
+
+    self.hide_all_sequences = function(){
+        d3.selectAll(".node").classed("selected_hidden", true);
+        d3.selectAll(".link").classed("hidden_link", true);
     };
 
 
@@ -216,147 +222,65 @@ ccviz.viz.circularTree = function(options) {
 
     };
 
+    self.refresh_from_clicked_param = function(){
 
-    self.set_node_table = function (nodes){
+        self.clicked_nodes = {};
 
+        var clicked_from_param = self.url_params['active'].split(".");
 
-        function get_arrows_html(d) {
+        $.each(clicked_from_param, function(i,d){
 
-            var names = [];
+            var id = parseInt(d, 10);
 
-            while (d.name != "root") {
-                names.unshift(d.name == "1" ? '<img class="node_arrow" src="img/arrow_up.png">' : '<img class="node_arrow" src="img/arrow_down.png">');
-                d = d.parent;
-            }
+            self.clicked_nodes[id] = true;
 
-            return names.join(" ");
+        });
 
-        }
+        d3.selectAll(".node").each(function(d,i){
 
-
-        var new_nodes = [];
-
-        $.each(nodes, function(i,d){
-
-            // Do not insert if root
-            if(d.depth!=0) {
-                new_nodes.push(d);
+            if(i in self.clicked_nodes){
+                self.select_inmediate_descendents(self.get_sequence_from_node(d));
+                d3.select(this).classed("clicked", true);
+                d3.select(this).select(".expansion").text("-");
             }
         });
-
-        // Sort by frequency
-        // TODO: Define in the UI != sort possibilities
-
-        new_nodes.sort(function (a,b){
-
-            return (b.size - a.size);
-
-        });
-
-        var node_panel = d3.select("#node_list");
-
-        var my_html = "";
-
-        $.each(new_nodes, function(i,d){
-
-            var node_html ="";
-
-//            node_html+='<div class="node_row">';
-                node_html+='<div class="node_check"><input class="sequence_check" type="checkbox" checked="checked" /></div>';
-                    node_html+='<div class="node_arrows">';
-                    node_html+= get_arrows_html(d);
-                    node_html+='</div>';
-                node_html+='<div class="node_info">';
-                    node_html+='<div class="node_freq">q:' + ((d.size / self.max_size)*100).toFixed(2) + "%" +'</div>';
-                    node_html+='<div class="node_prob">s:' + d.average.toFixed(2) +'</div>';
-                node_html+='</div>';
-            node_html+='</div>';
-
-            node_html+='<div style="clear:both;"></div>';
-
-            var node_string = self.get_sequence_from_node(d);
-
-//            my_html+='<div class="node_row">'+ node_html;
-
-
-            my_html+='<div class="node_row" sequence="'+ node_string + '">' + node_html;
-
-
-
-        });
-
-        node_panel.html(my_html);
-
-        // hook events on node row mouseover
-
-        $('.node_row').on("mouseover", function(d,i){
-            var node_sequence = $(this).attr("sequence");
-
-
-            self.select_nodes_with_sequence(node_sequence);
-//            self.select_links_with_sequence(node_sequence);
-        });
-
-        $('.node_row').on("mouseout", function(d,i){
-
-            self.reset_selected_nodes();
-
-//            self.reset_nodes();
-//            self.reset_links();
-
-        });
-
-        // Capture checkbox click
-        // http://stackoverflow.com/questions/1767246/javascript-check-if-string-begins-with-something
-
-
-
-        $('.sequence_check').click(function() {
-            var $this = $(this);
-            // $this will contain a reference to the checkbox
-
-            var sequence = d3.select(this.parentNode.parentNode).attr("sequence");
-
-            // Activate all nodes
-
-            self.unhide_all_sequences();
-
-            // Update deactivated
-
-            if ($this.is(':checked')) {
-                // the checkbox was checked
-
-                delete self.deactivated[sequence];
-
-
-            } else {
-                // the checkbox was unchecked
-
-                 self.deactivated[sequence] = true;
-
-            }
-
-            // And deactivate in sorted order (from shorter to longest)
-
-            var deactivated_keys = Object.keys(self.deactivated).sort(function(a,b){return a.length- b.length;});
-
-            $.each(deactivated_keys, function(i,d){
-                self.deselect_a_sequence(d);
-            });
-        });
-
-
-        // TODO: Hook checkbox events...
 
     };
 
+    self.refresh_clicked_param = function(){
+
+        d3.selectAll(".node").each(function(d,i){
+
+            // If visible and clicked...
+
+            if(d3.select(this).classed("clicked") && d3.select(this).classed("selected_hidden") === false){
+                self.clicked_nodes[i] = true;
+            }
+            else{
+                delete(self.clicked_nodes[i]);
+            }
+
+        });
+
+        self.set_url_param("active", Object.keys(self.clicked_nodes).join("."));
+
+    };
+
+
     self.render = function (file_path) {
+
+        // Initialize Qurl object
+
+        self.get_url_params();
 
         d3.json(file_path, function (error, json) {
             if (error) throw error;
 
               var nodes = self.tree.nodes(json),
                   links = self.tree.links(nodes);
+
+
+              self.clicked_nodes = {};
 
 
               var min_size = d3.min(nodes, function(d,i){return d.size;});
@@ -388,20 +312,22 @@ ccviz.viz.circularTree = function(options) {
                 })
                 .on("mouseout", function (d, i) {
                     self.tooltip.style("opacity", 0.0);
+                })
+                .on("click", function (d,i){
+                    if(d3.select(this).classed("clicked")){
+                        self.deselect_a_sequence(self.get_sequence_from_node(d));
+                        d3.select(this).classed("clicked", false);
+                        d3.select(this).select(".expansion").text("+");
+                    }
+                    else{
+                        self.select_inmediate_descendents(self.get_sequence_from_node(d));
+                        d3.select(this).classed("clicked", true);
+                        d3.select(this).select(".expansion").text("-");
+                    }
+
+                    self.refresh_clicked_param();
                 });
 
-
-//              node.append("circle")
-//                      .style("fill", function(d,i){
-//                            return d.name=="-1" ? "#FF1919": "#00B233";
-//                      })
-//                  .attr("r", 9.0);
-//
-//              node.append("circle")
-//                      .style("fill", function(d,i){
-//                            return d.name=="-1" ? "#FF1919": "#00B233";
-//                      })
-//                  .attr("r", 9.0);
 
             node.append("image")
                 .attr("class", "minus")
@@ -410,6 +336,23 @@ ccviz.viz.circularTree = function(options) {
                 .attr("width", "20px")
                 .attr("height", "20px")
                 .attr("xlink:href", function(d,i){return d.name=="-1" ? "img/arrow_down.png": "img/arrow_up.png";});
+
+              node.filter(function(d,i){return d.depth < self.max_depth;}).append("circle")
+                  .attr("class", "expansion_circle")
+                  .attr("cx", function(d) { return d.x < 180 ? -20 : +20; })
+                  .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+                  .attr("cy", 0)
+                  .attr("r", 5);
+
+              node.filter(function(d,i){return d.depth < self.max_depth;}).append("text")
+                  .attr("class", "expansion")
+                  .attr("dy", ".31em")
+                      .attr("x", function(d) { return d.x < 180 ? -22.5 : +22.5; })
+                  .attr("y", 0)
+                  .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+                  .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+                  .text("+");
+
 
               node.append("text")
                   .attr("dy", ".31em")
@@ -428,11 +371,31 @@ ccviz.viz.circularTree = function(options) {
                   .text(function(d) { return "q=" + ((d.size / self.max_size)*100).toFixed(2) + "%"; });
 
 
+              self.hide_all_sequences();
 
-            // Fill node table
+              self.select_a_sequence("UP");
+
+              self.select_a_sequence("DOWN");
+
+              d3.selectAll(".node").classed("clicked", false);
+
+              self.refresh_from_clicked_param();
+
+//              self.refresh_clicked_param();
 
 
-            self.set_node_table(nodes);
+
+
+
+
+//              self.select_inmediate_descendents("UP");
+//
+//              self.select_inmediate_descendents("DOWN");
+
+
+//              self.deselect_a_sequence("DOWN/DOWN");
+//              self.deselect_a_sequence("DOWN/UP");
+
 
 
         });

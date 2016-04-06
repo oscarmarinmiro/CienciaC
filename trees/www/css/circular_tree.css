@@ -4,6 +4,10 @@ html,body{
     height: 100%;
 }
 
+.node {
+    cursor: pointer;
+}
+
 .node circle {
   fill: #fff;
   stroke: black;
@@ -23,7 +27,7 @@ html,body{
 }
 
 .node.selected_hidden{
-    opacity:0.2;
+    opacity:0.0;
 }
 
 .link {
@@ -38,20 +42,34 @@ html,body{
 
 #options
 {
-    /*position: fixed;*/
     padding: 10px;
     font: 12px Helvetica Neue;
     background: #CCC;
     border: solid 0px #000;
     border-radius: 4px;
-    z-order:1000;
-    margin: 10px;
-    height: 50px;
-    /*width: 200px;*/
-    /*right: 20px;*/
-    /*top: 20px;*/
+    z-order: 1000;
+    position: absolute;
+    right: 10px;
+    top: 70px;
 }
 
+
+#help
+{
+    padding: 10px;
+    font: 12px Helvetica Neue;
+    background: #CCC;
+    border: solid 0px #000;
+    border-radius: 4px;
+    z-order: 1000;
+    position: absolute;
+    right: 10px;
+    top: 20px;
+}
+
+.hidden_link{
+    visibility: hidden;
+}
 
 #node_browser
 {
@@ -131,6 +149,13 @@ svg{
     display: block;
 }
 
+.expansion{
+    font-size:10px;
+}
+
+.expansion_circle{
+    stroke-width:0.1px;
+}
 
 .tooltip_viz
 {
@@ -177,4 +202,21 @@ svg{
     text-decoration: underline;
     color: black;
     cursor:pointer;
+}
+
+#header{
+    position:fixed;
+    background-image: url('../img/arrow_down.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    height: 0px;
+    width:100%;
+    border-bottom: 0.5px;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+}
+
+#viz_frame{
+    padding-top:0px;
 }
