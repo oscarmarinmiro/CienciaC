@@ -54,6 +54,19 @@ html,body{
     top: 70px;
 }
 
+#error_div
+{
+    padding: 10px;
+    font: 18px Helvetica Neue;
+    background: #CCC;
+    border: solid 0px #000;
+    border-radius: 4px;
+    z-order: 1000;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    top: 50%;
+}
 
 #help
 {

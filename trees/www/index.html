@@ -38,6 +38,12 @@
 
 var self = {};
 
+self.first_trigger = true;
+
+self.url_query = Qurl.create();
+
+self.dataset = self.url_query.query("dataset");
+
 d3.json("data/config_circular.json", function (error, json) {
     if (error) throw error;
 
@@ -55,9 +61,23 @@ d3.json("data/config_circular.json", function (error, json) {
         files.append($("<option />").val(key).text(key));
     });
 
+    if(self.dataset!= "" && !(self.dataset === undefined)){
+        if(self.dataset in self.config_data) {
+            files.val(self.dataset);
+        }
+//        else {
+//            d3.select("html").append("div").attr("id", "error_div").html("Did not find dataset '" + self.dataset + "'");
+//        }
+    }
+
+
+
     files.change(function()
     {
         var key = $(this).val();
+
+        self.url_query.query("dataset", key);
+
         console.log("COMBO CHANGED");
 
         var content = self.config_data[key];
@@ -69,6 +89,15 @@ d3.json("data/config_circular.json", function (error, json) {
         $("svg").remove();
         $("#tooltip").remove();
 
+        // Remove active node list on landing on != dataset
+
+        if(!(self.first_trigger)) {
+
+            self.url_query.query("active", false);
+        }
+        else{
+           self.first_trigger = false;
+        }
 
         var header_v_offset =  $("#header").css("height").replace(" px","").replace("px", "");
 
