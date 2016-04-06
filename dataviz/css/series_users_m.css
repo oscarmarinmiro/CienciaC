@@ -10,6 +10,7 @@ body,html{
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
+    background-color: #FFF;
     height: 75px;
     width:100%;
 }
